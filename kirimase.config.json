@@ -1,0 +1,7 @@
+{
+  "driver": "mysql",
+  "hasSrc": true,
+  "provider": "planetscale",
+  "packages": ["drizzle", "trpc", "next-auth", "shadcn-ui"],
+  "preferredPackageManager": "pnpm"
+}
