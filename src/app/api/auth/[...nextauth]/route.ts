@@ -3,8 +3,8 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { DefaultSession, NextAuthOptions } from "next-auth";
 import NextAuth from "next-auth/next";
 import DiscordProvider from "next-auth/providers/discord";
-import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
 
 declare module "next-auth" {
   interface Session {
@@ -22,8 +22,15 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
   },
+
+  secret: process.env.NEXTAUTH_SECRET!,
+  pages: {
+    newUser: "/home/onboarding",
+    signIn: "/auth/sign-in",
+    signOut: "/auth/sign-out",
+  },
   providers: [
-     DiscordProvider({
+    DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID!,
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
     }),
@@ -34,7 +41,7 @@ export const authOptions: NextAuthOptions = {
     GithubProvider({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-    })
+    }),
   ],
 };
 
