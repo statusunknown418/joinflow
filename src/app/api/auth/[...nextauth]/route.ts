@@ -17,17 +17,31 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db),
   callbacks: {
-    session: ({ session, user }) => {
-      session.user.id = user.id;
-      return session;
-    },
-  },
+    jwt: ({ account, token, user }) => {
+      if (account && user) {
+        token.accessToken = account.access_token;
+        token.id = user.id;
+      }
 
+      return token;
+    },
+    session: ({ session, token }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: token.id,
+        username: token.username,
+      },
+    }),
+  },
   secret: process.env.NEXTAUTH_SECRET!,
   pages: {
     newUser: "/home/onboarding",
     signIn: "/auth/sign-in",
     signOut: "/auth/sign-out",
+  },
+  session: {
+    strategy: "jwt",
   },
   providers: [
     DiscordProvider({
