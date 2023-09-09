@@ -1,3 +1,6 @@
+import SignIn from "@/components/auth/SignIn";
+import { Input } from "@/components/ui/input";
+
 export default function SignInPage() {
   return (
     <section>
@@ -6,13 +9,15 @@ export default function SignInPage() {
       <p>Is your company registered with us?</p>
       <span className="underline">I don&apos;t know 🤔</span>
 
-      <input type="text" />
+      <Input placeholder="ACME LLC." />
 
       <ul>
         <li>With google</li>
         <li>With discord</li>
         <li>With github</li>
       </ul>
+
+      <SignIn />
     </section>
   );
 }

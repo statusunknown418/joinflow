@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { NewComputer, insertComputerSchema } from "@/lib/db/schema/computers";
 import { trpc } from "@/lib/trpc/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createId } from "@paralleldrive/cuid2";
+import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 export const NewComputerForm = () => {
   const form = useForm<NewComputer>({
@@ -13,10 +14,9 @@ export const NewComputerForm = () => {
     defaultValues: {
       brand: "",
       cores: 0,
-      id: createId(),
     },
   });
-
+  const { data: session } = useSession();
   const ctx = trpc.useContext();
   const newComputer = trpc.computers.new.useMutation({
     onSuccess: () => {
@@ -25,10 +25,16 @@ export const NewComputerForm = () => {
   });
 
   const onSubmit = form.handleSubmit((data) => {
-    newComputer.mutate(data);
+    toast.promise(newComputer.mutateAsync(data), {
+      loading: "Creating computer...",
+      success: "Saved!",
+      error: "Something went wrong",
+    });
 
     form.reset();
   });
+
+  console.log({ session });
 
   return (
     <Form {...form}>
@@ -46,6 +52,7 @@ export const NewComputerForm = () => {
         <h2>Hi</h2>
 
         <pre>{JSON.stringify(form.formState.errors)}</pre>
+        <pre>{JSON.stringify(session)}</pre>
       </form>
     </Form>
   );
