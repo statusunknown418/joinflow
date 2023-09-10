@@ -1,22 +1,25 @@
-import { createId } from "@paralleldrive/cuid2";
 import { relations } from "drizzle-orm";
 import {
+  int,
   mysqlEnum,
   mysqlTable,
   primaryKey,
+  serial,
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
 import { users } from "./auth";
 
 export const organizations = mysqlTable("organizations", {
-  id: varchar("id", { length: 36 }).notNull().$defaultFn(createId).primaryKey(),
+  id: serial("id").primaryKey(),
   name: varchar("name", { length: 255 }).notNull(),
   handle: varchar("handle", { length: 255 }).notNull().unique(),
   plan: mysqlEnum("plan", ["free", "scaler", "enterprise", "custom"])
     .notNull()
     .default("free"),
-  ownerId: varchar("admin_id", { length: 36 }).notNull().unique(),
+  ownerId: varchar("admin_id", { length: 36 }).notNull(),
   avatarURL: varchar("avatar", { length: 255 }),
   createdAt: timestamp("created_at", {
     fsp: 5,
@@ -26,13 +29,26 @@ export const organizations = mysqlTable("organizations", {
 export const organizationToUsers = mysqlTable(
   "organization_to_users",
   {
-    organizationId: varchar("organization_id", { length: 36 }).notNull(),
+    organizationId: int("organization_id").notNull(),
     userId: varchar("user_id", { length: 36 }).notNull(),
   },
   (t) => ({
     pk: primaryKey(t.organizationId, t.userId),
   })
 );
+
+export type CreateOrganizationType = z.infer<typeof createOrganizationSchema>;
+export const createOrganizationSchema = createInsertSchema(organizations, {
+  name: (s) => s.name.min(1),
+  plan: (s) => s.plan.optional().default("free"),
+})
+  .omit({
+    id: true,
+    ownerId: true,
+    createdAt: true,
+    handle: true,
+  })
+  .required();
 
 /**
  * ========== MANY-TO-MANY relations for organizations and users ==========
