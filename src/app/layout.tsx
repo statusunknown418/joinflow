@@ -1,5 +1,6 @@
 import NextAuthProvider from "@/lib/auth/Provider";
 import TrpcProvider from "@/lib/trpc/Provider";
+import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import { Raleway } from "next/font/google";
@@ -8,7 +9,7 @@ import { Toaster } from "react-hot-toast";
 import "../styles/globals.css";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 
-const inter = Raleway({ subsets: ["latin"] });
+const raleway = Raleway({ subsets: ["latin"] });
 
 /* TODO: Complete OG images */
 export const metadata: Metadata = {
@@ -62,7 +63,7 @@ export default async function RootLayout({
         />
       </head>
 
-      <body className={inter.className}>
+      <body className={cn(raleway.className, "h-screen")}>
         <TrpcProvider>
           <NextAuthProvider session={session}>
             {children}
