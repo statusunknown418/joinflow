@@ -1,5 +1,6 @@
 import type { AdapterAccount } from "@auth/core/adapters";
 import {
+  boolean,
   int,
   mysqlTable,
   primaryKey,
@@ -16,6 +17,7 @@ export const users = mysqlTable("user", {
     fsp: 3,
   }).defaultNow(),
   image: varchar("image", { length: 255 }),
+  isOnboard: boolean("isOnboard").default(false),
 });
 
 export const accounts = mysqlTable(

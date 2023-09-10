@@ -4,10 +4,13 @@ import {
   computerIdSchema,
   computers,
 } from "@/lib/db/schema/computers";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export const getComputers = async () => {
-  const c = await db.select().from(computers);
+  const c = await db
+    .select()
+    .from(computers)
+    .orderBy(desc(computers.createdAt));
   return c;
 };
 

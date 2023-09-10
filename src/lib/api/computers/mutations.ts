@@ -11,14 +11,9 @@ import { eq } from "drizzle-orm";
 export const createComputer = async (computer: NewComputer) => {
   const newComputer = insertComputerSchema.parse(computer);
   try {
-    await db.insert(computers).values(newComputer);
+    const c = await db.insert(computers).values(newComputer);
 
-    const newC = await db
-      .select()
-      .from(computers)
-      .where(eq(computers.id, computer.id));
-
-    return { computer: newC };
+    return { computer: c };
   } catch (err) {
     return { error: (err as Error).message ?? "Error, please try again" };
   }
