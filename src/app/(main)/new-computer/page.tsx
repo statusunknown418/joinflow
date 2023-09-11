@@ -1,6 +1,6 @@
 import { Loader } from "lucide-react";
 import { Suspense } from "react";
-import { NewComputerForm } from "../_ui/NewComputerForm";
+import { NewComputerForm } from "./_ui/NewComputerForm";
 import { ShowAll } from "./all";
 
 export default async function NewComputerPage() {

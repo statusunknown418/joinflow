@@ -71,9 +71,11 @@ export default async function RootLayout({
             <Toaster
               position="bottom-center"
               toastOptions={{
+                duration: 3000,
                 style: {
                   borderRadius: "9999px",
                   backgroundColor: "#171717",
+                  border: "1px solid #27272a",
                   color: "#e5e5e5",
                   fontSize: "14px",
                   fontWeight: "500",
