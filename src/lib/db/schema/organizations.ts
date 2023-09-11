@@ -46,7 +46,6 @@ export const createOrganizationSchema = createInsertSchema(organizations, {
     id: true,
     ownerId: true,
     createdAt: true,
-    handle: true,
   })
   .required();
 

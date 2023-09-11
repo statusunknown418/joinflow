@@ -5,10 +5,12 @@ import {
   FormControl,
   FormDescription,
   FormField,
+  FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Spinner } from "@/components/ui/spinner";
 import {
   CreateOrganizationType,
@@ -34,6 +36,7 @@ export const OnboardingForm = () => {
     },
   });
 
+  const selectedPlan = methods.watch("plan");
   const updateOnboardingStore = useOnboardingStore(
     (state) => state.completeOnboarding
   );
@@ -65,7 +68,7 @@ export const OnboardingForm = () => {
           control={methods.control}
           name="name"
           render={({ field }) => (
-            <div className="flex flex-col gap-2">
+            <FormItem>
               <FormLabel>Name</FormLabel>
               <FormControl {...field}>
                 <Input
@@ -79,11 +82,66 @@ export const OnboardingForm = () => {
               <FormDescription>
                 A cool name for your company or the name itself
               </FormDescription>
-            </div>
+            </FormItem>
           )}
         />
 
-        <Button disabled={newOrganization.isLoading}>
+        <FormField
+          control={methods.control}
+          name="plan"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Plan</FormLabel>
+
+              <FormControl>
+                <RadioGroup
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                  className="flex items-center"
+                >
+                  <FormItem className="flex group items-center space-y-0">
+                    <FormControl>
+                      <RadioGroupItem value="free" className="group" />
+                    </FormControl>
+
+                    <FormLabel className="flex flex-col text-muted-foreground group-aria-checked:text-white">
+                      <span>Free forever</span>
+                      <span>$0/month</span>
+                    </FormLabel>
+                  </FormItem>
+
+                  <FormItem className="flex items-center space-y-0">
+                    <FormControl className="sr-only">
+                      <RadioGroupItem value="scaler" />
+                    </FormControl>
+
+                    <FormLabel className="font-normal">
+                      Scaler ($9/month)
+                    </FormLabel>
+                  </FormItem>
+
+                  <FormItem className="flex items-center space-y-0">
+                    <FormControl className="sr-only">
+                      <RadioGroupItem value="enterprise" />
+                    </FormControl>
+
+                    <FormLabel className="font-normal">
+                      Enterprise $29/month
+                    </FormLabel>
+                  </FormItem>
+                </RadioGroup>
+              </FormControl>
+
+              <FormDescription>
+                Select the plan that best fits your needs
+              </FormDescription>
+
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <Button disabled={newOrganization.isLoading} className="self-end">
           {newOrganization.isLoading ? (
             <Spinner className="animate-spin" />
           ) : (

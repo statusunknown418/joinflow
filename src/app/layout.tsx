@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "getrehire",
+    title: "joinflow",
     authors: ["https://x.com/@alvaro_dotdev"],
     description: "The job of 10 HR managers done solo!",
     images: ["/opengraph-image.png"],
@@ -63,7 +63,7 @@ export default async function RootLayout({
         />
       </head>
 
-      <body className={cn(raleway.className, "h-screen")}>
+      <body className={cn(raleway.className, "h-screen dark")}>
         <TrpcProvider>
           <NextAuthProvider session={session}>
             {children}
