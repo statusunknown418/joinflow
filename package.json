@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "format": "pnpm exec prettier --write . --config .prettierrc",
     "db:generate": "drizzle-kit generate:mysql",
     "db:migrate": "tsx src/lib/db/migrate.ts",
     "db:drop": "drizzle-kit drop",
@@ -85,7 +86,9 @@
   "devDependencies": {
     "dotenv": "^16.3.1",
     "drizzle-kit": "^0.19.13",
-    "mysql2": "^3.6.0",
+    "mysql2": "^3.6.1",
+    "prettier": "^3.0.3",
+    "prettier-plugin-tailwindcss": "^0.5.4",
     "tsx": "^3.12.8"
   }
 }
