@@ -1,5 +1,6 @@
 import { connect } from "@planetscale/database";
 import "dotenv/config";
+import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 import * as users from "./schema/auth";
 import { computers } from "./schema/computers";
@@ -19,3 +20,9 @@ const connection = connect({
 export const db = drizzle(connection, {
   schema,
 });
+
+export const findOrganizationByHandlePreparedSQL = db.query.organizations
+  .findFirst({
+    where: (o, { eq }) => eq(o.handle, sql.placeholder("handle")),
+  })
+  .prepare();

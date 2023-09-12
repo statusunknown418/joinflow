@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Loader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export const Spinner = ({
   className,
@@ -9,8 +9,8 @@ export const Spinner = ({
   size?: "sm" | "md" | "lg" | "xl";
 }) => {
   return (
-    <Loader
-      className={cn("animate-spin", className)}
+    <Loader2
+      className={cn("animate-spin text-zinc-300", className)}
       size={
         size === "sm"
           ? 16

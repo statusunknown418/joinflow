@@ -21,7 +21,13 @@ import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { trpc } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowUpRightFromCircle, CheckCircle, MinusCircle, SaveIcon, XCircleIcon } from "lucide-react";
+import {
+  ArrowUpRightFromCircle,
+  CheckCircle,
+  MinusCircle,
+  SaveIcon,
+  XCircleIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
@@ -44,23 +50,26 @@ export const OnboardingForm = () => {
 
   const sluggedHandle = slugify(methods.watch("name"));
   const selectedPlan = methods.watch("plan");
-  const router = useRouter()
+  const router = useRouter();
 
   const updateOnboardingStore = useOnboardingStore(
-    (state) => state.completeOnboarding
+    (state) => state.completeOnboarding,
   );
 
   const completeOnboarding = trpc.user.updateOnboarding.useMutation({
     onSuccess: () => {
       updateOnboardingStore();
-      toast.success("Onboarding completed!");
       router.push(`/${sluggedHandle}/dashboard`);
+      toast.success("Onboarding completed!");
     },
   });
 
   const newOrganization = trpc.organizations.new.useMutation({
     onSuccess: () => {
       completeOnboarding.mutate();
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 
@@ -79,7 +88,7 @@ export const OnboardingForm = () => {
     <Form {...methods}>
       <form
         onSubmit={makeSubmit}
-        className="flex flex-col gap-5 bg-zinc-900/70 p-5 rounded-2xl w-full border border-zinc-800 shadow-xl shadow-black/50"
+        className="flex w-full flex-col gap-5 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 shadow-xl shadow-black/50"
       >
         <FormField
           control={methods.control}
@@ -90,7 +99,7 @@ export const OnboardingForm = () => {
               <FormControl {...field}>
                 <Input
                   placeholder="ACME LLC."
-                  className="w-full p-2 rounded-lg"
+                  className="w-full rounded-lg p-2"
                 />
               </FormControl>
 
@@ -104,30 +113,27 @@ export const OnboardingForm = () => {
         />
 
         <FormItem>
-            <FormLabel>Identifier</FormLabel>
+          <FormLabel>Identifier</FormLabel>
 
-          <div className="flex items-center rounded-lg border border-zinc-700 h-9 overflow-hidden">
-            <span className="px-4 border-r border-zinc-700 bg-zinc-800 h-full text-sm inline-flex items-center font-medium text-zinc-400">
+          <div className="flex h-9 items-center overflow-hidden rounded-lg border border-zinc-700">
+            <span className="inline-flex h-full items-center border-r border-zinc-700 bg-zinc-800 px-4 text-sm font-medium text-zinc-400">
               joinflow.sh/
             </span>
 
             <Input
               disabled
-              className="rounded-l-none border-y-700 disabled:opacity-100 bg-transparent border-x-0 rounded-none disabled:text-zinc-300"
+              className="border-y-700 rounded-none rounded-l-none border-x-0 bg-transparent disabled:text-zinc-300 disabled:opacity-100"
               defaultValue={sluggedHandle}
             />
 
-            <span className="px-4 border-l border-zinc-700 h-full text-sm inline-flex items-center font-medium text-zinc-400 bg-zinc-800 ">
+            <span className="inline-flex h-full items-center border-l border-zinc-700 bg-zinc-800 px-4 text-sm font-medium text-zinc-400 ">
               {debouncedSlug.length > 0 ? (
                 checkSlugAvailability.isLoading ? (
                   <Spinner size="sm" />
                 ) : checkSlugAvailability.data?.available ? (
                   <CheckCircle className=" text-green-600" size={16} />
                 ) : (
-                  <XCircleIcon
-                    className="text-red-500"
-                    size={16}
-                  />
+                  <XCircleIcon className="text-red-500" size={16} />
                 )
               ) : (
                 <MinusCircle className="text-zinc-400" size={16} />
@@ -135,22 +141,20 @@ export const OnboardingForm = () => {
             </span>
           </div>
 
-
-
           {/* TODO: Update this error states and user interactions */}
-          {
-            !!debouncedSlug &&  checkSlugAvailability.data?.recommended && <FormDescription className="text-destructive">
+          {!!debouncedSlug && checkSlugAvailability.data?.recommended && (
+            <FormDescription className="text-destructive">
               Oops, that name is unavailable
-              
               {/* what about this one <ArrowRight size={16} className="inline-block" />{" "}
               <span className="text-white">
                 {checkSlugAvailability.data?.recommended}
                 </span> */}
             </FormDescription>
-          }
+          )}
 
           <FormDescription>
-            This is based on your organization name and cannot be changed later, so choose wisely!
+            This is based on your organization name and cannot be changed later,
+            so choose wisely!
           </FormDescription>
         </FormItem>
 
@@ -169,18 +173,18 @@ export const OnboardingForm = () => {
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="flex items-center border rounded-xl p-2 border-muted"
+                  className="flex items-center rounded-xl border border-input p-2"
                 >
-                  <FormItem className="flex group items-center space-y-0 w-full justify-center">
+                  <FormItem className="group flex w-full items-center justify-center space-y-0">
                     <FormControl>
                       <RadioGroupItem value="free" className="sr-only" />
                     </FormControl>
 
                     <FormLabel
                       className={cn(
-                        "text-muted-foreground px-4 py-2 flex flex-col items-center gap-1 rounded-lg transition-all group-hover:bg-zinc-800/50 w-full",
+                        "flex w-full flex-col items-center gap-1 rounded-lg px-4 py-2 text-muted-foreground transition-all group-hover:bg-zinc-800/50",
                         selectedPlan === "free" &&
-                          "ring-2 ring-zinc-500 text-zinc-400"
+                          "text-zinc-400 ring-2 ring-zinc-500",
                       )}
                     >
                       <span className="font-bold">Free forever</span>
@@ -188,16 +192,16 @@ export const OnboardingForm = () => {
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className="flex items-center space-y-0 group w-full">
+                  <FormItem className="group flex w-full items-center space-y-0">
                     <FormControl className="sr-only">
                       <RadioGroupItem value="scaler" className="sr-only" />
                     </FormControl>
 
                     <FormLabel
                       className={cn(
-                        "text-muted-foreground px-4 py-2 flex flex-col items-center gap-1 rounded-lg transition-all group-hover:bg-zinc-800/50 w-full",
+                        "flex w-full flex-col items-center gap-1 rounded-lg px-4 py-2 text-muted-foreground transition-all group-hover:bg-zinc-800/50",
                         selectedPlan === "scaler" &&
-                          "ring-2 ring-violet-500 text-violet-400"
+                          "text-violet-400 ring-2 ring-violet-500",
                       )}
                     >
                       <span className="font-bold">Scaler</span>
@@ -205,16 +209,16 @@ export const OnboardingForm = () => {
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className="flex items-center space-y-0 group w-full">
+                  <FormItem className="group flex w-full items-center space-y-0">
                     <FormControl className="sr-only">
                       <RadioGroupItem value="enterprise" />
                     </FormControl>
 
                     <FormLabel
                       className={cn(
-                        "text-muted-foreground px-4 py-2 flex flex-col items-center gap-1 rounded-lg transition-all group-hover:bg-zinc-800/50 w-full",
+                        "flex w-full flex-col items-center gap-1 rounded-lg px-4 py-2 text-muted-foreground transition-all group-hover:bg-zinc-800/50",
                         selectedPlan === "enterprise" &&
-                          "ring-2 ring-blue-500 text-blue-400"
+                          "text-blue-400 ring-2 ring-blue-500",
                       )}
                     >
                       <span className="font-bold">Enterprise</span>
@@ -227,9 +231,10 @@ export const OnboardingForm = () => {
               <FormDescription>
                 <Link
                   href="/pricing"
-                  className="text-violet-400 transition-all underline-offset-1 hover:underline"
+                  className="text-violet-400 underline-offset-1 transition-all hover:underline"
                 >
-                  Find the details here! <ArrowUpRightFromCircle size={14}  className="inline-block"/>
+                  Find the details here!{" "}
+                  <ArrowUpRightFromCircle size={14} className="inline-block" />
                 </Link>
               </FormDescription>
 
@@ -243,7 +248,14 @@ export const OnboardingForm = () => {
           )}
         />
 
-        <Button disabled={newOrganization.isLoading || checkSlugAvailability.isLoading} className="self-end">
+        <Button
+          disabled={
+            newOrganization.isLoading ||
+            checkSlugAvailability.isLoading ||
+            checkSlugAvailability.data?.available === false
+          }
+          className="self-end"
+        >
           {newOrganization.isLoading ? (
             <Spinner className="animate-spin" />
           ) : (

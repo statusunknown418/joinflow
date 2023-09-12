@@ -1,12 +1,9 @@
-import { Badge } from "@/components/ui/badge";
 import { OnboardingForm } from "./_ui/OnboardingForm";
 
 export default async function OnboardingPage() {
   return (
-    <section className="col-start-3 col-span-3 flex flex-col gap-6 w-full">
-      <header className="flex flex-col gap-2 justify-center">
-        <Badge className="max-w-max">[Stepper here]</Badge>
-
+    <section className="col-span-3 col-start-3 flex w-full flex-col gap-6">
+      <header className="flex flex-col justify-center gap-2">
         <h1 className="text-4xl font-extrabold">Welcome aboard</h1>
 
         <p className="text-muted-foreground">

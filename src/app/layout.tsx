@@ -13,9 +13,14 @@ const raleway = Raleway({ subsets: ["latin"] });
 
 /* TODO: Complete OG images */
 export const metadata: Metadata = {
-  title: "JoinFlow",
+  title: {
+    template: "%s | JoinFlow",
+    default: "JoinFlow",
+  },
   description: "The job of 10 HR managers done solo!",
   metadataBase: new URL("https://joinflow.vercel.app"),
+  themeColor: "#000000",
+  creator: "midnight.studios",
   authors: [
     {
       name: "Alvaro",
@@ -63,7 +68,7 @@ export default async function RootLayout({
         />
       </head>
 
-      <body className={cn(raleway.className, "h-screen dark")}>
+      <body className={cn(raleway.className, "h-screen")}>
         <TrpcProvider>
           <NextAuthProvider session={session}>
             {children}

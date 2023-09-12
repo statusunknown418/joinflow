@@ -19,7 +19,7 @@ export const organizations = mysqlTable("organizations", {
   plan: mysqlEnum("plan", ["free", "scaler", "enterprise", "custom"])
     .notNull()
     .default("free"),
-  ownerId: varchar("admin_id", { length: 36 }).notNull(),
+  ownerId: varchar("admin_id", { length: 255 }).notNull(),
   avatarURL: varchar("avatar", { length: 255 }),
   createdAt: timestamp("created_at", {
     fsp: 5,
@@ -34,12 +34,16 @@ export const organizationToUsers = mysqlTable(
   },
   (t) => ({
     pk: primaryKey(t.organizationId, t.userId),
-  })
+  }),
 );
 
+export type OrganizationType = typeof organizations.$inferInsert;
 export type CreateOrganizationType = z.infer<typeof createOrganizationSchema>;
 export const createOrganizationSchema = createInsertSchema(organizations, {
-  name: (s) => s.name.min(1),
+  name: (s) =>
+    s.name.min(3, {
+      message: "The organization name needs to be at least 3 character long 💀",
+    }),
   plan: (s) => s.plan.optional().default("free"),
 })
   .omit({
@@ -60,7 +64,7 @@ export const organizationRelation = relations(
       references: [users.id],
     }),
     members: many(organizationToUsers),
-  })
+  }),
 );
 
 export const usersRelation = relations(users, ({ many }) => ({
@@ -78,5 +82,5 @@ export const organizationToUsersRelation = relations(
       fields: [organizationToUsers.userId],
       references: [users.id],
     }),
-  })
+  }),
 );

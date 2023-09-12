@@ -25,20 +25,20 @@ const loginOptions = [
 
 export default function SignInModal() {
   return (
-    <section className="p-7 md:p-10 rounded-xl bg-zinc-900/60 backdrop-filter backdrop-blur border border-zinc-800 md:col-start-2 col-span-2 w-full shadow-xl shadow-black/50 flex flex-col gap-5">
+    <section className="col-span-2 flex w-full flex-col gap-5 rounded-xl border border-zinc-800 bg-zinc-900/60 p-7 shadow-xl shadow-black/50 backdrop-blur backdrop-filter md:col-start-2 md:p-10">
       <Badge className="max-w-max" variant="default">
         Welcome
       </Badge>
 
       <h1 className="text-3xl font-black">Let&apos;s get you in!</h1>
 
-      <article className="grid grid-cols-1 md:grid-cols-9 md:gap-0 gap-2 w-full">
+      <article className="grid w-full grid-cols-1 gap-2 md:grid-cols-9 md:gap-0">
         <div className="flex flex-col gap-4 md:col-span-4">
           <p className="flex flex-col gap-1">
-            <span className="text-zinc-200 font-medium">
+            <span className="font-medium text-zinc-200">
               Is your company registered with us?
             </span>
-            <span className="text-zinc-400 text-sm">
+            <span className="text-sm text-zinc-400">
               If so enter its name or slug (handle) to find it!
             </span>
           </p>
@@ -46,27 +46,27 @@ export default function SignInModal() {
           <Input placeholder="ACME LLC." />
 
           <Link href="/find-company">
-            <span className="underline text-violet-500">
+            <span className="text-violet-500 underline">
               I don&apos;t know 🤔
             </span>
           </Link>
         </div>
 
-        <div className="md:hidden self-center flex items-center justify-between">
-          <Separator className="bg-zinc-700 place-self-center w-1/3" />
+        <div className="flex items-center justify-between self-center md:hidden">
+          <Separator className="w-1/3 place-self-center bg-zinc-700" />
           <span>or</span>
-          <Separator className="bg-zinc-700 place-self-center w-1/3" />
+          <Separator className="w-1/3 place-self-center bg-zinc-700" />
         </div>
 
         <div className="hidden md:grid">
           <Separator
-            className="bg-zinc-700 place-self-center"
+            className="place-self-center bg-zinc-700"
             orientation="vertical"
           />
         </div>
 
         <div className="md:col-span-4">
-          <ul className="flex flex-col gap-2 justify-center items-center h-full">
+          <ul className="flex h-full flex-col items-center justify-center gap-2">
             {loginOptions.map((props) => (
               <SignIn key={props.provider} className="w-full" {...props} />
             ))}
