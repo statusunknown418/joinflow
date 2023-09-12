@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "pnpm exec prettier --write . --config .prettierrc",
+    "format": "pnpm exec prettier --write . --config prettier.config.mjs",
     "db:generate": "drizzle-kit generate:mysql",
     "db:migrate": "tsx src/lib/db/migrate.ts",
     "db:drop": "drizzle-kit drop",
