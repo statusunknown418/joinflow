@@ -40,7 +40,7 @@ const buttonVariants = cva(
       width: "default",
       rounding: "default",
     },
-  }
+  },
 );
 
 export interface ButtonProps
@@ -52,19 +52,19 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     { className, variant, size, asChild = false, width, rounding, ...props },
-    ref
+    ref,
   ) => {
     const Comp = asChild ? Slot : "button";
     return (
       <Comp
         className={cn(
-          buttonVariants({ variant, size, className, width, rounding })
+          buttonVariants({ variant, size, className, width, rounding }),
         )}
         ref={ref}
         {...props}
       />
     );
-  }
+  },
 );
 Button.displayName = "Button";
 
