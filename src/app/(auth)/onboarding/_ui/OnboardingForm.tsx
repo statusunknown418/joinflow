@@ -16,12 +16,17 @@ import {
   CreateOrganizationType,
   createOrganizationSchema,
 } from "@/lib/db/schema/organizations";
+import { useDebounce } from "@/lib/hooks/use-debounce";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { trpc } from "@/lib/trpc/client";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { SaveIcon } from "lucide-react";
+import { ArrowUpRightFromCircle, CheckCircle, MinusCircle, SaveIcon, XCircleIcon } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import slugify from "slugify";
 
 export const OnboardingForm = () => {
   const methods = useForm<CreateOrganizationType>({
@@ -33,10 +38,14 @@ export const OnboardingForm = () => {
       name: "",
       plan: "free",
       avatarURL: "",
+      handle: "",
     },
   });
 
+  const sluggedHandle = slugify(methods.watch("name"));
   const selectedPlan = methods.watch("plan");
+  const router = useRouter()
+
   const updateOnboardingStore = useOnboardingStore(
     (state) => state.completeOnboarding
   );
@@ -45,6 +54,7 @@ export const OnboardingForm = () => {
     onSuccess: () => {
       updateOnboardingStore();
       toast.success("Onboarding completed!");
+      router.push(`/${sluggedHandle}/dashboard`);
     },
   });
 
@@ -54,8 +64,15 @@ export const OnboardingForm = () => {
     },
   });
 
+  const debouncedSlug = useDebounce(sluggedHandle, 500);
+  const checkSlugAvailability =
+    trpc.organizations.checkSlug.useQuery(debouncedSlug);
+
   const makeSubmit = methods.handleSubmit((data) => {
-    newOrganization.mutate(data);
+    newOrganization.mutate({
+      ...data,
+      handle: sluggedHandle,
+    });
   });
 
   return (
@@ -73,7 +90,7 @@ export const OnboardingForm = () => {
               <FormControl {...field}>
                 <Input
                   placeholder="ACME LLC."
-                  className="w-full p-2 bg-zinc-800 rounded-lg border border-zinc-700 focus:outline-none focus:border-violet-600"
+                  className="w-full p-2 rounded-lg"
                 />
               </FormControl>
 
@@ -86,6 +103,57 @@ export const OnboardingForm = () => {
           )}
         />
 
+        <FormItem>
+            <FormLabel>Identifier</FormLabel>
+
+          <div className="flex items-center rounded-lg border border-zinc-700 h-9 overflow-hidden">
+            <span className="px-4 border-r border-zinc-700 bg-zinc-800 h-full text-sm inline-flex items-center font-medium text-zinc-400">
+              joinflow.sh/
+            </span>
+
+            <Input
+              disabled
+              className="rounded-l-none border-y-700 disabled:opacity-100 bg-transparent border-x-0 rounded-none disabled:text-zinc-300"
+              defaultValue={sluggedHandle}
+            />
+
+            <span className="px-4 border-l border-zinc-700 h-full text-sm inline-flex items-center font-medium text-zinc-400 bg-zinc-800 ">
+              {debouncedSlug.length > 0 ? (
+                checkSlugAvailability.isLoading ? (
+                  <Spinner size="sm" />
+                ) : checkSlugAvailability.data?.available ? (
+                  <CheckCircle className=" text-green-600" size={16} />
+                ) : (
+                  <XCircleIcon
+                    className="text-red-500"
+                    size={16}
+                  />
+                )
+              ) : (
+                <MinusCircle className="text-zinc-400" size={16} />
+              )}
+            </span>
+          </div>
+
+
+
+          {/* TODO: Update this error states and user interactions */}
+          {
+            !!debouncedSlug &&  checkSlugAvailability.data?.recommended && <FormDescription className="text-destructive">
+              Oops, that name is unavailable
+              
+              {/* what about this one <ArrowRight size={16} className="inline-block" />{" "}
+              <span className="text-white">
+                {checkSlugAvailability.data?.recommended}
+                </span> */}
+            </FormDescription>
+          }
+
+          <FormDescription>
+            This is based on your organization name and cannot be changed later, so choose wisely!
+          </FormDescription>
+        </FormItem>
+
         <FormField
           control={methods.control}
           name="plan"
@@ -93,47 +161,81 @@ export const OnboardingForm = () => {
             <FormItem>
               <FormLabel>Plan</FormLabel>
 
+              <FormDescription>
+                Select the plan that best fits your needs
+              </FormDescription>
+
               <FormControl>
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="flex items-center"
+                  className="flex items-center border rounded-xl p-2 border-muted"
                 >
-                  <FormItem className="flex group items-center space-y-0">
+                  <FormItem className="flex group items-center space-y-0 w-full justify-center">
                     <FormControl>
-                      <RadioGroupItem value="free" className="group" />
+                      <RadioGroupItem value="free" className="sr-only" />
                     </FormControl>
 
-                    <FormLabel className="flex flex-col text-muted-foreground group-aria-checked:text-white">
-                      <span>Free forever</span>
-                      <span>$0/month</span>
+                    <FormLabel
+                      className={cn(
+                        "text-muted-foreground px-4 py-2 flex flex-col items-center gap-1 rounded-lg transition-all group-hover:bg-zinc-800/50 w-full",
+                        selectedPlan === "free" &&
+                          "ring-2 ring-zinc-500 text-zinc-400"
+                      )}
+                    >
+                      <span className="font-bold">Free forever</span>
+                      <span className="font-normal">$0/month</span>
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className="flex items-center space-y-0">
+                  <FormItem className="flex items-center space-y-0 group w-full">
                     <FormControl className="sr-only">
-                      <RadioGroupItem value="scaler" />
+                      <RadioGroupItem value="scaler" className="sr-only" />
                     </FormControl>
 
-                    <FormLabel className="font-normal">
-                      Scaler ($9/month)
+                    <FormLabel
+                      className={cn(
+                        "text-muted-foreground px-4 py-2 flex flex-col items-center gap-1 rounded-lg transition-all group-hover:bg-zinc-800/50 w-full",
+                        selectedPlan === "scaler" &&
+                          "ring-2 ring-violet-500 text-violet-400"
+                      )}
+                    >
+                      <span className="font-bold">Scaler</span>
+                      <span className="font-normal">$9/month</span>
                     </FormLabel>
                   </FormItem>
 
-                  <FormItem className="flex items-center space-y-0">
+                  <FormItem className="flex items-center space-y-0 group w-full">
                     <FormControl className="sr-only">
                       <RadioGroupItem value="enterprise" />
                     </FormControl>
 
-                    <FormLabel className="font-normal">
-                      Enterprise $29/month
+                    <FormLabel
+                      className={cn(
+                        "text-muted-foreground px-4 py-2 flex flex-col items-center gap-1 rounded-lg transition-all group-hover:bg-zinc-800/50 w-full",
+                        selectedPlan === "enterprise" &&
+                          "ring-2 ring-blue-500 text-blue-400"
+                      )}
+                    >
+                      <span className="font-bold">Enterprise</span>
+                      <span className="font-normal">$29/month</span>
                     </FormLabel>
                   </FormItem>
                 </RadioGroup>
               </FormControl>
 
               <FormDescription>
-                Select the plan that best fits your needs
+                <Link
+                  href="/pricing"
+                  className="text-violet-400 transition-all underline-offset-1 hover:underline"
+                >
+                  Find the details here! <ArrowUpRightFromCircle size={14}  className="inline-block"/>
+                </Link>
+              </FormDescription>
+
+              <FormDescription className="text-xs">
+                You can always change this later, it is not subject to any
+                contract
               </FormDescription>
 
               <FormMessage />
@@ -141,7 +243,7 @@ export const OnboardingForm = () => {
           )}
         />
 
-        <Button disabled={newOrganization.isLoading} className="self-end">
+        <Button disabled={newOrganization.isLoading || checkSlugAvailability.isLoading} className="self-end">
           {newOrganization.isLoading ? (
             <Spinner className="animate-spin" />
           ) : (
