@@ -11,8 +11,6 @@ export const OrganizationValidator = () => {
 
   const orgHandle = segments.at(0);
 
-  console.log({ segments });
-
   if (!isMounted) return;
 
   if (orgHandle === lastViewedOrgHandle) return;

@@ -34,8 +34,6 @@ export const NewComputerForm = () => {
     form.reset();
   });
 
-  console.log({ session });
-
   return (
     <Form {...form}>
       <form onSubmit={onSubmit}>

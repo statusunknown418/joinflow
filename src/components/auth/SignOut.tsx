@@ -4,7 +4,14 @@ import { Button } from "../ui/button";
 
 export const SignOut = () => {
   return (
-    <Button onClick={() => signOut()} variant="outline">
+    <Button
+      onClick={() =>
+        signOut({
+          callbackUrl: "/",
+        })
+      }
+      variant="outline"
+    >
       Sign Out
     </Button>
   );
