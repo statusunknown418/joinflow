@@ -11,6 +11,7 @@ import {
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { users } from "./auth";
+import { projectsToUsers } from "./projects";
 
 export const organizations = mysqlTable("organizations", {
   id: serial("id").primaryKey(),
@@ -30,7 +31,12 @@ export const organizationToUsers = mysqlTable(
   "organization_to_users",
   {
     organizationId: int("organization_id").notNull(),
-    userId: varchar("user_id", { length: 36 }).notNull(),
+    userId: varchar("user_id", { length: 255 }).notNull(),
+    accessLevel: mysqlEnum("access_level", [
+      "admin",
+      "member",
+      "guest",
+    ]).default("member"),
   },
   (t) => ({
     pk: primaryKey(t.organizationId, t.userId),
@@ -69,6 +75,7 @@ export const organizationRelation = relations(
 
 export const usersRelation = relations(users, ({ many }) => ({
   organizations: many(organizationToUsers),
+  projects: many(projectsToUsers),
 }));
 
 export const organizationToUsersRelation = relations(

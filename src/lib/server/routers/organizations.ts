@@ -22,6 +22,7 @@ export const organizationsRouter = router({
       const createRelation = await db.insert(organizationToUsers).values({
         organizationId: Number(insertIntoTable.insertId),
         userId: session.user.id,
+        accessLevel: "admin",
       });
 
       return {

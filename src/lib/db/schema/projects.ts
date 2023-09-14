@@ -1,4 +1,13 @@
-import { mysqlTable, serial, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { relations } from "drizzle-orm";
+import {
+  int,
+  mysqlTable,
+  primaryKey,
+  serial,
+  timestamp,
+  varchar,
+} from "drizzle-orm/mysql-core";
+import { users } from "./auth";
 
 export const projects = mysqlTable("projects", {
   id: serial("id").primaryKey(),
@@ -14,3 +23,36 @@ export const projects = mysqlTable("projects", {
    * TODO: whenever drizzle updates the `onUpdateNow` function change it here
    */
 });
+
+export const projectsRelations = relations(projects, ({ one, many }) => ({
+  creator: one(users, {
+    fields: [projects.creatorID],
+    references: [users.id],
+  }),
+  members: many(projectsToUsers),
+}));
+
+export const projectsToUsers = mysqlTable(
+  "projects_to_users",
+  {
+    projectId: int("project_id").notNull(),
+    userId: varchar("user_id", { length: 36 }).notNull(),
+  },
+  (t) => ({
+    pk: primaryKey(t.projectId, t.userId),
+  }),
+);
+
+export const projectToUsersRelations = relations(
+  projectsToUsers,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [projectsToUsers.userId],
+      references: [users.id],
+    }),
+    project: one(projects, {
+      fields: [projectsToUsers.projectId],
+      references: [projects.id],
+    }),
+  }),
+);
