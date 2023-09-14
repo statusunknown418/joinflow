@@ -14,7 +14,7 @@ const raleway = Raleway({ subsets: ["latin"] });
 /* TODO: Complete OG images */
 export const metadata: Metadata = {
   title: {
-    template: "%s | JoinFlow",
+    template: "%s",
     default: "JoinFlow",
   },
   description: "The job of 10 HR managers done solo!",
