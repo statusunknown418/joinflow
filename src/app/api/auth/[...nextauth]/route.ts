@@ -17,7 +17,7 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
   adapter: DrizzleAdapter(db),
   callbacks: {
-    jwt: ({ account, token, user, session }) => {
+    jwt: ({ account, token, user }) => {
       if (account && user) {
         token.accessToken = account.access_token;
         token.id = user.id;
@@ -37,7 +37,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET!,
   pages: {
-    newUser: "/onboarding",
+    newUser: "/spaces/onboarding",
     signIn: "/login",
     signOut: "/logout",
   },
