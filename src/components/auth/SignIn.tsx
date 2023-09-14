@@ -21,7 +21,7 @@ export default function SignIn({
       className={className}
       onClick={() =>
         signIn(provider, {
-          callbackUrl: "/dashboard",
+          callbackUrl: "/spaces/select",
         })
       }
     >

@@ -16,4 +16,11 @@ export const userRouter = router({
       success: true,
     };
   }),
+  getOwnedSpaces: protectedProcedure.query(async ({ ctx }) => {
+    const orgs = await db.query.organizations.findMany({
+      where: (o, { eq }) => eq(o.ownerId, ctx.session.user.id),
+    });
+
+    return orgs;
+  }),
 });

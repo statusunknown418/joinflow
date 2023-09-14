@@ -22,6 +22,7 @@ export const organizations = mysqlTable("organizations", {
     .default("free"),
   ownerId: varchar("admin_id", { length: 255 }).notNull(),
   avatarURL: varchar("avatar", { length: 255 }),
+  approxSizeUpTo: int("size_up_to").default(10),
   createdAt: timestamp("created_at", {
     fsp: 5,
   }).defaultNow(),
@@ -43,6 +44,8 @@ export const organizationToUsers = mysqlTable(
   }),
 );
 
+export type AddMemberType = z.infer<typeof addMemberSchema>;
+export const addMemberSchema = createInsertSchema(organizationToUsers);
 export type OrganizationType = typeof organizations.$inferInsert;
 export type CreateOrganizationType = z.infer<typeof createOrganizationSchema>;
 export const createOrganizationSchema = createInsertSchema(organizations, {

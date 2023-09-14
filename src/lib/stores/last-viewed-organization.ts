@@ -10,7 +10,7 @@ export type LastViewedOrganization = {
 
 export const useLastViewedOrganization = create(
   persist<LastViewedOrganization>(
-    (set, get) => ({
+    (set) => ({
       id: null,
       handle: null,
       update: (o) => {
