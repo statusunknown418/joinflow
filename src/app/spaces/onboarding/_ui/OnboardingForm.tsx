@@ -11,6 +11,13 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 import {
   CreateOrganizationType,
@@ -83,6 +90,7 @@ export const OnboardingForm = () => {
   const makeSubmit = methods.handleSubmit((data) => {
     newOrganization.mutate({
       ...data,
+      approxSizeUpTo: Number(data.approxSizeUpTo),
       handle: sluggedHandle,
     });
   });
@@ -91,7 +99,7 @@ export const OnboardingForm = () => {
     <Form {...methods}>
       <form
         onSubmit={makeSubmit}
-        className="flex w-full flex-col gap-5 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 shadow-xl shadow-black/50"
+        className="flex w-full flex-col gap-6 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 shadow-xl shadow-black/50"
       >
         <FormField
           control={methods.control}
@@ -119,7 +127,7 @@ export const OnboardingForm = () => {
           <FormLabel>Workspace URL</FormLabel>
 
           <div className="flex h-9 items-center overflow-hidden rounded-lg border border-zinc-700">
-            <span className="inline-flex h-full items-center border-r border-zinc-700 bg-zinc-800 px-4 text-sm font-medium text-zinc-400">
+            <span className="hidden h-full items-center border-r border-zinc-700 bg-muted px-4 text-sm font-medium text-zinc-400 sm:inline-flex">
               joinflow.sh/
             </span>
 
@@ -129,7 +137,7 @@ export const OnboardingForm = () => {
               defaultValue={sluggedHandle}
             />
 
-            <span className="inline-flex h-full items-center border-l border-zinc-700 bg-zinc-800 px-4 text-sm font-medium text-zinc-400 ">
+            <span className="inline-flex h-full items-center border-l border-zinc-700 bg-muted px-4 text-sm font-medium text-zinc-400 ">
               {debouncedSlug.length > 0 ? (
                 checkSlugAvailability.isLoading ? (
                   <Spinner size="sm" />
@@ -156,10 +164,43 @@ export const OnboardingForm = () => {
           )}
 
           <FormDescription>
-            This is based on your organization name and cannot be changed later,
-            so choose wisely!
+            This cannot be changed later{" "}
+            <span className="italic">(for now)</span>, so choose wisely!
           </FormDescription>
         </FormItem>
+
+        <FormField
+          control={methods.control}
+          name="approxSizeUpTo"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Agency size</FormLabel>
+
+              <Select
+                onValueChange={field.onChange}
+                value={field.value?.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder={"Up to 10"} />
+                  </SelectTrigger>
+                </FormControl>
+
+                <SelectContent>
+                  <SelectItem value={"10"}>1-10</SelectItem>
+                  <SelectItem value={"50"}>11-50</SelectItem>
+                  <SelectItem value={"100"}>51-100</SelectItem>
+                </SelectContent>
+              </Select>
+
+              <FormMessage />
+
+              <FormDescription>
+                This will help us better understand your needs
+              </FormDescription>
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={methods.control}
@@ -176,7 +217,7 @@ export const OnboardingForm = () => {
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  className="flex items-center rounded-xl border border-input p-2"
+                  className="grid grid-cols-1 items-center rounded-xl border border-input p-2 transition-all focus-within:ring-2 focus-within:ring-ring md:grid-cols-3"
                 >
                   <FormItem className="group flex w-full items-center justify-center space-y-0">
                     <FormControl>
