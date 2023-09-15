@@ -14,7 +14,13 @@ export const projects = mysqlTable("projects", {
   identifier: varchar("identifier", { length: 20 }).notNull().unique(),
   name: varchar("name", { length: 255 }).notNull(),
   description: varchar("description", { length: 255 }),
-  creatorID: varchar("creator_id", { length: 255 }).notNull(),
+  creatorId: varchar("creator_id", { length: 255 }).notNull(),
+  startDate: timestamp("start_date", {
+    fsp: 5,
+  }),
+  endDate: timestamp("end_date", {
+    fsp: 5,
+  }),
   createdAt: timestamp("created_at", {
     fsp: 5,
   }).defaultNow(),
@@ -26,7 +32,7 @@ export const projects = mysqlTable("projects", {
 
 export const projectsRelations = relations(projects, ({ one, many }) => ({
   creator: one(users, {
-    fields: [projects.creatorID],
+    fields: [projects.creatorId],
     references: [users.id],
   }),
   members: many(projectsToUsers),

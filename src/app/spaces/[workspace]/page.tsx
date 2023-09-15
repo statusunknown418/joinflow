@@ -3,7 +3,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { db } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
-import { RedirectModal } from "../_ui/RedirectModal";
+import { RedirectModal } from "../select/_ui/RedirectModal";
 
 export type ParamsForWorkspacePages = {
   workspace: string;
@@ -33,6 +33,31 @@ export default async function HomePage() {
           <h3>{org?.plan}</h3>
         </div>
       ))}
+      {orgs.map((org) => (
+        <div key={org.id}>
+          <h2>Organization: {org?.name}</h2>
+          <h3>-{org?.owner.email}</h3>
+          <h3>{org?.handle}</h3>
+          <h3>{org?.plan}</h3>
+        </div>
+      ))}
+      {orgs.map((org) => (
+        <div key={org.id}>
+          <h2>Organization: {org?.name}</h2>
+          <h3>-{org?.owner.email}</h3>
+          <h3>{org?.handle}</h3>
+          <h3>{org?.plan}</h3>
+        </div>
+      ))}
+      {orgs.map((org) => (
+        <div key={org.id}>
+          <h2>Organization: {org?.name}</h2>
+          <h3>-{org?.owner.email}</h3>
+          <h3>{org?.handle}</h3>
+          <h3>{org?.plan}</h3>
+        </div>
+      ))}
+
       <SignOut />
 
       <RedirectModal />

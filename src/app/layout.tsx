@@ -3,13 +3,24 @@ import TrpcProvider from "@/lib/trpc/Provider";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
-import { Raleway } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import Script from "next/script";
 import { Toaster } from "react-hot-toast";
 import "../styles/globals.css";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 
-const raleway = Raleway({ subsets: ["latin"] });
+/**
+ * Font options:
+ * Nunito
+ * Poppins
+ * Montserrat
+ * Raleway
+ */
+
+const raleway = Montserrat({
+  subsets: ["latin"],
+  // weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+});
 
 /* TODO: Complete OG images */
 export const metadata: Metadata = {
@@ -74,16 +85,20 @@ export default async function RootLayout({
             {children}
 
             <Toaster
-              position="bottom-center"
+              position="bottom-right"
               toastOptions={{
-                duration: 3000,
+                duration: 4000,
                 style: {
-                  borderRadius: "9999px",
-                  backgroundColor: "#171717",
+                  borderRadius: "32px",
+                  paddingBlock: "8px",
+                  paddingInline: "16px",
+                  backgroundColor: "#181818a8",
                   border: "1px solid #27272a",
                   color: "#e5e5e5",
                   fontSize: "14px",
                   fontWeight: "500",
+                  maxWidth: "320px",
+                  backdropFilter: "blur(8px)",
                 },
               }}
             />

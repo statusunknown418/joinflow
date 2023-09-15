@@ -19,6 +19,7 @@ export const organizationsRouter = router({
 
         const insertIntoTable = await db.insert(organizations).values({
           ...input,
+          approxSizeUpTo: Number(input.approxSizeUpTo),
           ownerId: session.user.id,
         });
 

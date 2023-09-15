@@ -54,6 +54,7 @@ export const createOrganizationSchema = createInsertSchema(organizations, {
       message: "The organization name needs to be at least 3 character long 💀",
     }),
   plan: (s) => s.plan.optional().default("free"),
+  approxSizeUpTo: (s) => s.approxSizeUpTo.optional().default(10).or(z.string()),
 })
   .omit({
     id: true,

@@ -6,6 +6,7 @@ import {
   mysqlTable,
   primaryKey,
   serial,
+  text,
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
@@ -15,9 +16,10 @@ import { projects } from "./projects";
 export const jobPosting = mysqlTable("job_posting", {
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
-  description: varchar("description", { length: 255 }),
+  description: text("description"),
   budget: int("budget"),
   showCompensation: boolean("show_compensation").default(true),
+  estimateHires: int("estimate_hires").default(1),
   compensationType: mysqlEnum("compensation_type", [
     "hourly",
     "fixed",
