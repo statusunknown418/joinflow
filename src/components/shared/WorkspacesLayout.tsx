@@ -22,7 +22,7 @@ export const MainSidebar = () => {
   return (
     <aside
       className={cn(
-        "flex flex-col rounded-r-2xl border border-zinc-700 bg-zinc-800/30 p-4 backdrop-blur backdrop-filter transition-all",
+        "flex min-h-screen flex-col rounded-r-2xl border border-zinc-700 bg-zinc-800/30 p-4 backdrop-blur backdrop-filter transition-all",
       )}
     >
       <Button

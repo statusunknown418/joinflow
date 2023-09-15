@@ -15,7 +15,7 @@ export default function WorkspaceLayout({
 }) {
   return (
     <div className="flex min-h-full flex-col">
-      <section className="grid max-h-full grid-cols-6 overflow-hidden">
+      <section className="grid min-h-full grid-cols-6 overflow-hidden">
         <MainSidebar />
 
         <div className="relative col-span-4 flex max-h-screen flex-col">
