@@ -23,6 +23,7 @@ export const MainSidebar = () => {
     <aside
       className={cn(
         "flex min-h-screen flex-col rounded-r-2xl border border-zinc-700 bg-zinc-800/30 p-4 backdrop-blur backdrop-filter transition-all",
+        "w-[200px]",
       )}
     >
       <Button
@@ -40,7 +41,12 @@ export const MainSidebar = () => {
 
 export const SecondarySidebar = () => {
   return (
-    <aside className="inset-0 flex flex-col rounded-l-2xl border border-zinc-700 bg-zinc-800/30 p-4 backdrop-blur backdrop-filter">
+    <aside
+      className={cn(
+        "inset-0 flex flex-col rounded-l-2xl border border-zinc-700 bg-zinc-800/30 p-4 backdrop-blur backdrop-filter",
+        "w-[200px]",
+      )}
+    >
       Sidebar 2 maybe
     </aside>
   );

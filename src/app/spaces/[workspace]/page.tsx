@@ -33,30 +33,6 @@ export default async function HomePage() {
           <h3>{org?.plan}</h3>
         </div>
       ))}
-      {orgs.map((org) => (
-        <div key={org.id}>
-          <h2>Organization: {org?.name}</h2>
-          <h3>-{org?.owner.email}</h3>
-          <h3>{org?.handle}</h3>
-          <h3>{org?.plan}</h3>
-        </div>
-      ))}
-      {orgs.map((org) => (
-        <div key={org.id}>
-          <h2>Organization: {org?.name}</h2>
-          <h3>-{org?.owner.email}</h3>
-          <h3>{org?.handle}</h3>
-          <h3>{org?.plan}</h3>
-        </div>
-      ))}
-      {orgs.map((org) => (
-        <div key={org.id}>
-          <h2>Organization: {org?.name}</h2>
-          <h3>-{org?.owner.email}</h3>
-          <h3>{org?.handle}</h3>
-          <h3>{org?.plan}</h3>
-        </div>
-      ))}
 
       <SignOut />
 

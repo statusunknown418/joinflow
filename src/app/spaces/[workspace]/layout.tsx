@@ -14,18 +14,16 @@ export default function WorkspaceLayout({
   params: ParamsForWorkspacePages;
 }) {
   return (
-    <div className="flex min-h-full flex-col">
-      <section className="grid min-h-full grid-cols-6 overflow-hidden">
-        <MainSidebar />
+    <section className="flex min-h-full overflow-hidden">
+      <MainSidebar />
 
-        <div className="relative col-span-4 flex max-h-screen flex-col">
-          <Navigation selectedSegment={workspace} />
+      <div className="relative col-span-4 flex max-h-screen flex-grow flex-col">
+        <Navigation selectedSegment={workspace} />
 
-          <section className="overflow-y-auto p-5">{children}</section>
-        </div>
+        <section className="overflow-y-auto p-5">{children}</section>
+      </div>
 
-        <SecondarySidebar />
-      </section>
-    </div>
+      <SecondarySidebar />
+    </section>
   );
 }
