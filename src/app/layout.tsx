@@ -79,7 +79,7 @@ export default async function RootLayout({
         />
       </head>
 
-      <body className={cn(raleway.className, "h-screen")}>
+      <body className={cn(raleway.className, "h-screen text-sm")}>
         <TrpcProvider>
           <NextAuthProvider session={session}>
             {children}

@@ -70,6 +70,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -77,8 +78,7 @@
 
 @layer components {
   .background-animate {
-    background-size: 400%;
-
+    background-size: 450%;
     -webkit-animation: BgAnimation 5s ease infinite;
     -moz-animation: BgAnimation 5s ease infinite;
     animation: BgAnimation 5s ease infinite;
