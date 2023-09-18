@@ -19,7 +19,7 @@ export const DetectAuth = () => {
         <Link href={`/spaces/${lastViewedOrganization}`}>Dashboard</Link>
       )}
 
-      <Link href="/login">Sign in</Link>
+      {!session?.user && <Link href="/login">Sign in</Link>}
     </div>
   ) : (
     <Link href="/login">Sign in</Link>
