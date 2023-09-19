@@ -33,11 +33,12 @@ import {
   ArrowUpRightFromCircle,
   CheckCircle,
   MinusCircle,
-  SaveIcon,
+  Send,
   XCircleIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import slugify from "slugify";
@@ -68,7 +69,7 @@ export const OnboardingForm = () => {
   const completeOnboarding = trpc.user.updateOnboarding.useMutation({
     onSuccess: () => {
       updateOnboardingStore();
-      router.push(`/spaces/${sluggedHandle}/`);
+      router.push(`/spaces/${sluggedHandle}`);
       toast.success("Onboarding completed!");
     },
   });
@@ -93,7 +94,13 @@ export const OnboardingForm = () => {
       approxSizeUpTo: Number(data.approxSizeUpTo),
       handle: sluggedHandle,
     });
+
+    updateLastViewed({ name: data.name });
   });
+
+  useEffect(() => {
+    methods.setValue("handle", sluggedHandle);
+  }, [methods, sluggedHandle]);
 
   return (
     <Form {...methods}>
@@ -123,51 +130,58 @@ export const OnboardingForm = () => {
           )}
         />
 
-        <FormItem>
-          <FormLabel>Workspace URL</FormLabel>
+        <FormField
+          control={methods.control}
+          name="handle"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Workspace URL</FormLabel>
 
-          <div className="flex h-9 items-center overflow-hidden rounded-lg border border-zinc-700">
-            <span className="hidden h-full items-center border-r border-zinc-700 bg-muted px-4 text-sm font-medium text-zinc-400 sm:inline-flex">
-              joinflow.sh/
-            </span>
+              <div className="flex h-9 items-center overflow-hidden rounded-lg border border-zinc-700">
+                <span className="hidden h-full items-center border-r border-zinc-700 bg-muted px-4 text-sm font-medium text-zinc-400 sm:inline-flex">
+                  joinflow.sh/
+                </span>
 
-            <Input
-              disabled
-              className="border-y-700 rounded-none rounded-l-none border-x-0 bg-transparent disabled:text-zinc-300 disabled:opacity-100"
-              defaultValue={sluggedHandle}
-            />
+                <FormControl {...field}>
+                  <Input
+                    className="border-y-700 rounded-none rounded-l-none border-x-0 bg-transparent disabled:text-zinc-300 disabled:opacity-100"
+                    disabled
+                  />
+                </FormControl>
 
-            <span className="inline-flex h-full items-center border-l border-zinc-700 bg-muted px-4 text-sm font-medium text-zinc-400 ">
-              {debouncedSlug.length > 0 ? (
-                checkSlugAvailability.isLoading ? (
-                  <Spinner size="sm" />
-                ) : checkSlugAvailability.data?.available ? (
-                  <CheckCircle className=" text-green-600" size={16} />
-                ) : (
-                  <XCircleIcon className="text-red-500" size={16} />
-                )
-              ) : (
-                <MinusCircle className="text-zinc-400" size={16} />
-              )}
-            </span>
-          </div>
+                <span className="inline-flex h-full items-center border-l border-zinc-700 bg-muted px-4 text-sm font-medium text-zinc-400 ">
+                  {debouncedSlug.length > 0 ? (
+                    checkSlugAvailability.isLoading ? (
+                      <Spinner size="sm" />
+                    ) : checkSlugAvailability.data?.available ? (
+                      <CheckCircle className=" text-green-600" size={16} />
+                    ) : (
+                      <XCircleIcon className="text-red-500" size={16} />
+                    )
+                  ) : (
+                    <MinusCircle className="text-zinc-400" size={16} />
+                  )}
+                </span>
+              </div>
 
-          {/* TODO: Update this error states and user interactions */}
-          {!!debouncedSlug && checkSlugAvailability.data?.recommended && (
-            <FormDescription className="text-destructive">
-              Oops, that name is unavailable
-              {/* what about this one <ArrowRight size={16} className="inline-block" />{" "}
+              {/* TODO: Update this error states and user interactions */}
+              {!!debouncedSlug && checkSlugAvailability.data?.recommended && (
+                <FormDescription className="text-destructive">
+                  Oops, that name is unavailable
+                  {/* what about this one <ArrowRight size={16} className="inline-block" />{" "}
               <span className="text-white">
                 {checkSlugAvailability.data?.recommended}
                 </span> */}
-            </FormDescription>
-          )}
+                </FormDescription>
+              )}
 
-          <FormDescription>
-            This cannot be changed later{" "}
-            <span className="italic">(for now)</span>, so choose wisely!
-          </FormDescription>
-        </FormItem>
+              <FormDescription>
+                This cannot be changed later{" "}
+                <span className="italic">(for now)</span>, so choose wisely!
+              </FormDescription>
+            </FormItem>
+          )}
+        />
 
         <FormField
           control={methods.control}
@@ -303,7 +317,7 @@ export const OnboardingForm = () => {
           {newOrganization.isLoading ? (
             <Spinner className="animate-spin" />
           ) : (
-            <SaveIcon size={16} />
+            <Send size={16} />
           )}
           Save
         </Button>

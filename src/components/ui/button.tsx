@@ -3,9 +3,10 @@ import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { Spinner } from "./spinner";
 
 const buttonVariants = cva(
-  "inline-flex items-center gap-1.5 select-none disabled:cursor-not-allowed justify-center text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center gap-1.5 select-none disabled:cursor-not-allowed justify-center text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -13,9 +14,9 @@ const buttonVariants = cva(
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
         outline:
-          "border border-input hover:bg-accent/40 hover:text-accent-foreground",
+          "border border-input hover:bg-muted/60 hover:text-accent-foreground",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/60 border border-input",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
       },
@@ -32,6 +33,10 @@ const buttonVariants = cva(
       rounding: {
         default: "rounded-full",
         md: "rounded-md",
+      },
+      loading: {
+        true: "opacity-80 pointer-events-none",
+        false: "",
       },
     },
     defaultVariants: {
@@ -51,7 +56,17 @@ export interface ButtonProps
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
-    { className, variant, size, asChild = false, width, rounding, ...props },
+    {
+      className,
+      variant,
+      size,
+      asChild = false,
+      width,
+      loading,
+      rounding,
+      children,
+      ...props
+    },
     ref,
   ) => {
     const Comp = asChild ? Slot : "button";
@@ -62,7 +77,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         )}
         ref={ref}
         {...props}
-      />
+      >
+        {loading && <Spinner />}
+
+        {children}
+      </Comp>
     );
   },
 );

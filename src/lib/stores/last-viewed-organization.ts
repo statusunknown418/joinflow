@@ -5,7 +5,10 @@ import { OrganizationType } from "../db/schema/organizations";
 export type LastViewedOrganization = {
   id: number | null;
   handle: string | null;
-  update: (o: Pick<OrganizationType, "handle" | "id">) => void;
+  name: string | null;
+  update: (
+    o: Partial<Pick<OrganizationType, "handle" | "id" | "name">>,
+  ) => void;
 };
 
 export const useLastViewedOrganization = create(
@@ -13,10 +16,12 @@ export const useLastViewedOrganization = create(
     (set) => ({
       id: null,
       handle: null,
+      name: null,
       update: (o) => {
         set({
           id: o.id,
           handle: o.handle,
+          name: o.name,
         });
       },
     }),
