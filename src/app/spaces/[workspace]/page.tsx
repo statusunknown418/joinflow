@@ -1,5 +1,5 @@
 import { SignOut } from "@/components/auth/SignOut";
-import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../../api/auth/[...nextauth]/route";
@@ -38,7 +38,19 @@ export default async function HomePage() {
 
       <RedirectModal />
 
-      <Spinner />
+      <Button loading>Test</Button>
+      <Button loading variant={"destructive"}>
+        Test
+      </Button>
+      <Button loading variant={"ghost"}>
+        Test
+      </Button>
+      <Button loading variant={"outline"}>
+        Test
+      </Button>
+      <Button loading variant={"secondary"}>
+        Test
+      </Button>
 
       <small>{t2 - t1}ms</small>
     </section>

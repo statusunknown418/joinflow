@@ -1,31 +1,73 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Newspaper } from "lucide-react";
+import {
+  Briefcase,
+  CalendarDays,
+  DollarSign,
+  LayoutGrid,
+  MailCheck,
+  Newspaper,
+  Users,
+} from "lucide-react";
+import Link from "next/link";
+import { useSelectedLayoutSegment } from "next/navigation";
 import toast from "react-hot-toast";
 import { SignOut } from "../auth/SignOut";
 import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
 
-export const Navigation = ({
-  selectedSegment,
-}: {
-  selectedSegment: string;
-}) => {
+export const Navigation = ({ slug }: { slug: string }) => {
+  const selectedSegment = useSelectedLayoutSegment();
+
   return (
     <nav className="mx-1 rounded-2xl border border-input bg-zinc-800/20 px-5 py-3 backdrop-blur-sm backdrop-filter">
       <ul className="flex items-center gap-4">
-        <li className="text-sm font-bold">{selectedSegment}</li>
+        <li className="text-sm font-bold">{selectedSegment || "Dashboard"}</li>
       </ul>
     </nav>
   );
 };
 
-export const MainSidebar = () => {
+export const mainSidebarItems = [
+  {
+    label: "Dashboard",
+    Icon: LayoutGrid,
+    href: "",
+  },
+  {
+    label: "Job postings",
+    Icon: Briefcase,
+    href: "jobs",
+  },
+  {
+    label: "Applicants",
+    Icon: Users,
+    href: "applicants",
+  },
+  {
+    label: "Interviews",
+    Icon: CalendarDays,
+    href: "interviews",
+  },
+  {
+    label: "Offers",
+    Icon: DollarSign,
+    href: "offers",
+  },
+  {
+    label: "Email templates",
+    Icon: MailCheck,
+    href: "emails",
+  },
+];
+
+export const MainSidebar = ({ slug }: { slug: string }) => {
+  const selectedSegment = useSelectedLayoutSegment();
+
   return (
     <aside
       className={cn(
-        "flex min-h-screen flex-col justify-between rounded-r-2xl border border-zinc-700 bg-zinc-800/30 p-4 backdrop-blur backdrop-filter transition-all",
+        "flex min-h-screen flex-col justify-between rounded-r-2xl border border-zinc-700 bg-zinc-800/30 px-2 py-5 backdrop-blur backdrop-filter transition-all",
         "w-[220px]",
       )}
     >
@@ -38,17 +80,32 @@ export const MainSidebar = () => {
         Collapse
       </Button>
 
-      <ul className="flex list-inside flex-col gap-6">
-        <li>Recent activity</li>
+      <ul className="flex list-inside flex-col gap-4">
+        {mainSidebarItems.map(({ Icon, href, label }, idx) => (
+          <Link href={`/spaces/${slug}/${href}`} key={idx}>
+            <li
+              className={cn(
+                "inline-flex w-full items-center gap-2 rounded-full px-4 py-2",
+                selectedSegment === href ||
+                  (idx === 0 && selectedSegment === null)
+                  ? "bg-indigo-900/70 text-zinc-50"
+                  : "text-zinc-300 transition-all hover:bg-background/80 hover:text-zinc-50 hover:shadow-lg",
+              )}
+            >
+              <Icon
+                size={16}
+                className={cn(
+                  selectedSegment === href ||
+                    (idx === 0 && selectedSegment === null)
+                    ? "text-indigo-400"
+                    : "text-inherit",
+                )}
+              />
 
-        <Separator />
-
-        <li>Job postings (1/5)</li>
-        <li>Applicants (1/5)</li>
-        <li>Interviews (1/5)</li>
-        <li>Offers (1/5)</li>
-        <li>Onboardings (1/5)</li>
-        <li>Analytics (1/5)</li>
+              <span>{label}</span>
+            </li>
+          </Link>
+        ))}
       </ul>
 
       <div className="flex items-center gap-2">

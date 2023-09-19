@@ -15,10 +15,10 @@ export default function WorkspaceLayout({
 }) {
   return (
     <section className="flex min-h-full overflow-hidden">
-      <MainSidebar />
+      <MainSidebar slug={workspace} />
 
       <div className="relative col-span-4 flex max-h-screen flex-grow flex-col">
-        <Navigation selectedSegment={workspace} />
+        <Navigation slug={workspace} />
 
         <section className="overflow-y-auto p-5">{children}</section>
       </div>
