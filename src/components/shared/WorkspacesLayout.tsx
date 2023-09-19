@@ -1,5 +1,7 @@
 "use client";
 
+import { useMounted } from "@/lib/hooks/use-mounted";
+import { useLastViewedOrganization } from "@/lib/stores/last-viewed-organization";
 import { cn } from "@/lib/utils";
 import {
   Briefcase,
@@ -7,22 +9,29 @@ import {
   DollarSign,
   LayoutGrid,
   MailCheck,
-  Newspaper,
   Users,
 } from "lucide-react";
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
-import toast from "react-hot-toast";
 import { SignOut } from "../auth/SignOut";
-import { Button } from "../ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Spinner } from "../ui/spinner";
 
-export const Navigation = ({ slug }: { slug: string }) => {
+export const Navigation = () => {
   const selectedSegment = useSelectedLayoutSegment();
 
   return (
     <nav className="mx-1 rounded-2xl border border-input bg-zinc-800/20 px-5 py-3 backdrop-blur-sm backdrop-filter">
       <ul className="flex items-center gap-4">
-        <li className="text-sm font-bold">{selectedSegment || "Dashboard"}</li>
+        <li className="text-sm font-semibold">
+          {selectedSegment || "Dashboard"}
+        </li>
       </ul>
     </nav>
   );
@@ -63,6 +72,8 @@ export const mainSidebarItems = [
 
 export const MainSidebar = ({ slug }: { slug: string }) => {
   const selectedSegment = useSelectedLayoutSegment();
+  const organizationName = useLastViewedOrganization((state) => state.name);
+  const mounted = useMounted();
 
   return (
     <aside
@@ -71,21 +82,31 @@ export const MainSidebar = ({ slug }: { slug: string }) => {
         "w-[220px]",
       )}
     >
-      <Button
-        variant="outline"
-        onClick={() => {
-          toast.success("test");
-        }}
-      >
-        Collapse
-      </Button>
+      <header className="flex items-center justify-between">
+        {mounted ? (
+          <Select>
+            <SelectTrigger>
+              <SelectValue placeholder={organizationName} />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="org-1">Update to Combobox</SelectItem>
+              <SelectItem value="new">New</SelectItem>
+            </SelectContent>
+          </Select>
+        ) : (
+          <div className="flex h-9 w-full items-center justify-center rounded-lg border border-input">
+            <Spinner />
+          </div>
+        )}
+      </header>
 
       <ul className="flex list-inside flex-col gap-4">
         {mainSidebarItems.map(({ Icon, href, label }, idx) => (
           <Link href={`/spaces/${slug}/${href}`} key={idx}>
             <li
               className={cn(
-                "inline-flex w-full items-center gap-2 rounded-full px-4 py-2",
+                "inline-flex w-full select-none items-center gap-2 rounded-full px-4 py-2",
                 selectedSegment === href ||
                   (idx === 0 && selectedSegment === null)
                   ? "bg-indigo-900/70 text-zinc-50"
@@ -110,8 +131,6 @@ export const MainSidebar = ({ slug }: { slug: string }) => {
 
       <div className="flex items-center gap-2">
         <SignOut />
-
-        <Newspaper size={20} />
       </div>
     </aside>
   );

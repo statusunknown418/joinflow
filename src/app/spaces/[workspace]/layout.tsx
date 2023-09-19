@@ -18,7 +18,7 @@ export default function WorkspaceLayout({
       <MainSidebar slug={workspace} />
 
       <div className="relative col-span-4 flex max-h-screen flex-grow flex-col">
-        <Navigation slug={workspace} />
+        <Navigation />
 
         <section className="overflow-y-auto p-5">{children}</section>
       </div>

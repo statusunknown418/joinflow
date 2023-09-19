@@ -76,7 +76,11 @@ export const OnboardingForm = () => {
 
   const newOrganization = trpc.organizations.new.useMutation({
     onSuccess: ({ organization: { insertId } }) => {
-      updateLastViewed({ handle: sluggedHandle, id: Number(insertId) });
+      updateLastViewed({
+        handle: sluggedHandle,
+        id: Number(insertId),
+        name: methods.getValues("name"),
+      });
       completeOnboarding.mutate();
     },
     onError: () => {
@@ -94,8 +98,6 @@ export const OnboardingForm = () => {
       approxSizeUpTo: Number(data.approxSizeUpTo),
       handle: sluggedHandle,
     });
-
-    updateLastViewed({ name: data.name });
   });
 
   useEffect(() => {
