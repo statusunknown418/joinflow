@@ -56,6 +56,7 @@
     "@types/node": "20.5.9",
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
+    "@uploadthing/react": "^5.6.1",
     "autoprefixer": "10.4.15",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
@@ -80,11 +81,12 @@
     "tailwindcss": "3.3.3",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
+    "uploadthing": "^5.6.1",
     "zod": "^3.22.2",
     "zustand": "^4.4.1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.7.0",
+    "@typescript-eslint/eslint-plugin": "^6.7.2",
     "dotenv": "^16.3.1",
     "drizzle-kit": "^0.19.13",
     "eslint-plugin-jsx-a11y": "^6.7.1",

@@ -1,7 +1,6 @@
 "use client";
 
 import { useMounted } from "@/lib/hooks/use-mounted";
-import { useLastViewedOrganization } from "@/lib/stores/last-viewed-organization";
 import { cn } from "@/lib/utils";
 import {
   Briefcase,
@@ -14,14 +13,8 @@ import {
 import Link from "next/link";
 import { useSelectedLayoutSegment } from "next/navigation";
 import { SignOut } from "../auth/SignOut";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { Spinner } from "../ui/spinner";
+import { WorkspaceSelector } from "./WorkspaceSelector";
 
 export const Navigation = () => {
   const selectedSegment = useSelectedLayoutSegment();
@@ -72,7 +65,6 @@ export const mainSidebarItems = [
 
 export const MainSidebar = ({ slug }: { slug: string }) => {
   const selectedSegment = useSelectedLayoutSegment();
-  const organizationName = useLastViewedOrganization((state) => state.name);
   const mounted = useMounted();
 
   return (
@@ -84,16 +76,7 @@ export const MainSidebar = ({ slug }: { slug: string }) => {
     >
       <header className="flex items-center justify-between">
         {mounted ? (
-          <Select>
-            <SelectTrigger>
-              <SelectValue placeholder={organizationName} />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value="org-1">Update to Combobox</SelectItem>
-              <SelectItem value="new">New</SelectItem>
-            </SelectContent>
-          </Select>
+          <WorkspaceSelector />
         ) : (
           <div className="flex h-9 w-full items-center justify-center rounded-lg border border-input">
             <Spinner />
