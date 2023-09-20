@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
+import { UploadDropzone } from "@/lib/api/uploadthing/client";
 import {
   CreateOrganizationType,
   createOrganizationSchema,
@@ -36,6 +37,7 @@ import {
   Send,
   XCircleIcon,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -57,6 +59,7 @@ export const OnboardingForm = () => {
     },
   });
 
+  const avatarURL = methods.watch("avatarURL");
   const sluggedHandle = slugify(methods.watch("name"));
   const selectedPlan = methods.watch("plan");
   const router = useRouter();
@@ -110,6 +113,64 @@ export const OnboardingForm = () => {
         onSubmit={makeSubmit}
         className="flex w-full flex-col gap-6 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 shadow-xl shadow-black/50"
       >
+        <div className="flex items-center gap-2">
+          <UploadDropzone
+            endpoint="imageUploader"
+            className="flex cursor-pointer items-center justify-center gap-1 border border-dashed border-input py-2 transition-all focus:outline-none focus:ring-2 focus:ring-ring "
+            content={{
+              label: (
+                <span className="font-semibold">
+                  Choose a logo image or drag it here
+                </span>
+              ),
+              allowedContent: (
+                <span className="text-xs text-muted-foreground">
+                  Only IMAGES allowed, max 4MB
+                </span>
+              ),
+            }}
+            appearance={{
+              label: {
+                fontSize: 13,
+              },
+              allowedContent: {
+                fontSize: 12,
+              },
+              button: {
+                fontSize: 12,
+                color: "#9CA3AF",
+              },
+              uploadIcon: {
+                width: 0,
+                height: 0,
+              },
+            }}
+            config={{
+              mode: "auto",
+            }}
+            onUploadProgress={(_p) => {
+              // TODO: Add progress ui
+            }}
+            onClientUploadComplete={(res) => {
+              toast.success("Upload Completed");
+              methods.setValue("avatarURL", res?.[0].url || null);
+            }}
+            onUploadError={(error: Error) => {
+              toast.error(`Upload error! ${error.message}`);
+            }}
+          />
+
+          {avatarURL && (
+            <Image
+              src={avatarURL}
+              alt={"logo"}
+              width={150}
+              height={150}
+              className="rounded-lg border border-input p-1"
+            />
+          )}
+        </div>
+
         <FormField
           control={methods.control}
           name="name"

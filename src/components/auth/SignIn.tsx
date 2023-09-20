@@ -1,4 +1,5 @@
 "use client";
+import { useLastViewedOrganization } from "@/lib/stores/last-viewed-organization";
 import { BuiltInProviderType } from "@auth/core/providers";
 import { LiteralUnion, signIn } from "next-auth/react";
 import { Button } from "../ui/button";
@@ -16,12 +17,16 @@ export default function SignIn({
   label,
   icon,
 }: SignInProps) {
+  const hasOrganization = useLastViewedOrganization((state) => state.handle);
+
   return (
     <Button
       className={className}
       onClick={() =>
         signIn(provider, {
-          callbackUrl: "/spaces/select",
+          callbackUrl: hasOrganization
+            ? `spaces/${hasOrganization}`
+            : "/spaces/select",
         })
       }
     >

@@ -33,6 +33,7 @@ const buttonVariants = cva(
       rounding: {
         default: "rounded-full",
         md: "rounded-md",
+        lg: "rounded-lg",
       },
       loading: {
         true: "opacity-80 pointer-events-none",

@@ -40,6 +40,15 @@ export const organizationsRouter = router({
         });
       }
     }),
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const { session } = ctx;
+
+    const allOrgs = await db.query.organizations.findMany({
+      where: (o, { eq }) => eq(o.ownerId, session.user.id),
+    });
+
+    return allOrgs;
+  }),
   addMember: protectedProcedure
     .input(addMemberSchema)
     .mutation(async ({ input }) => {
