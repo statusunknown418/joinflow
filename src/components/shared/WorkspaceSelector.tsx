@@ -46,8 +46,21 @@ export function WorkspaceSelector() {
     push(`/spaces/${workspace.handle}`);
   };
 
+  const currentImageSrc = workspaces.data?.find(
+    (o) => o.name === organizationName,
+  )?.avatarURL;
+
   if (!mounted) {
-    return <Spinner />;
+    return (
+      <Button
+        variant="outline"
+        role="combobox"
+        rounding="lg"
+        className={cn("w-full justify-center gap-3 border-transparent")}
+      >
+        <Spinner />
+      </Button>
+    );
   }
 
   return (
@@ -59,23 +72,18 @@ export function WorkspaceSelector() {
           rounding="lg"
           aria-expanded={open}
           className={cn(
-            "justify-start gap-3 border-transparent",
+            "justify-start gap-3 border-transparent px-3 capitalize",
             open && "bg-zinc-600/30",
           )}
         >
-          {organizationName &&
-            workspaces.data?.find((o) => o.name === organizationName)
-              ?.avatarURL && (
-              <Image
-                src={
-                  workspaces.data?.find((o) => o.name === organizationName)
-                    ?.avatarURL!
-                }
-                width={24}
-                height={24}
-                alt={organizationName}
-              />
-            )}
+          {organizationName && currentImageSrc && (
+            <Image
+              src={currentImageSrc}
+              width={24}
+              height={24}
+              alt={organizationName}
+            />
+          )}
 
           {organizationName
             ? workspaces.data?.find((o) => o.name === organizationName)?.name
@@ -133,7 +141,7 @@ export function WorkspaceSelector() {
               }}
             >
               <PlusCircle size={16} className="text-indigo-400" />
-              <span>Create a workspace</span>
+              <span>New organization</span>
             </CommandItem>
           </CommandGroup>
         </Command>

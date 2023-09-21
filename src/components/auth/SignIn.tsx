@@ -2,6 +2,7 @@
 import { useLastViewedOrganization } from "@/lib/stores/last-viewed-organization";
 import { BuiltInProviderType } from "@auth/core/providers";
 import { LiteralUnion, signIn } from "next-auth/react";
+import { useState } from "react";
 import { Button } from "../ui/button";
 
 export type SignInProps = {
@@ -17,20 +18,23 @@ export default function SignIn({
   label,
   icon,
 }: SignInProps) {
+  const [loader, startLoader] = useState(false);
   const hasOrganization = useLastViewedOrganization((state) => state.handle);
 
   return (
     <Button
       className={className}
-      onClick={() =>
+      loading={loader}
+      onClick={() => {
+        startLoader(true);
         signIn(provider, {
           callbackUrl: hasOrganization
-            ? `spaces/${hasOrganization}`
+            ? `/spaces/${hasOrganization}`
             : "/spaces/select",
-        })
-      }
+        });
+      }}
     >
-      {icon}
+      {!loader && icon}
       <span>{label}</span>
     </Button>
   );

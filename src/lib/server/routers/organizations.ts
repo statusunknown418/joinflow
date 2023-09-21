@@ -17,8 +17,17 @@ export const organizationsRouter = router({
       try {
         const { session } = ctx;
 
+        const nameToQuerySearch = new URLSearchParams({
+          name: input.name,
+        });
+
+        const avatar =
+          input.avatarURL ||
+          `https://ui-avatars.com/api/?name=${nameToQuerySearch.toString()}&background=a5b4fc&rounded=true&size=64`;
+
         const insertIntoTable = await db.insert(organizations).values({
           ...input,
+          avatarURL: avatar,
           approxSizeUpTo: Number(input.approxSizeUpTo),
           ownerId: session.user.id,
         });

@@ -17,9 +17,8 @@ import { authOptions } from "./api/auth/[...nextauth]/route";
  * Raleway
  */
 
-const raleway = Montserrat({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  // weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 /* TODO: Complete OG images */
@@ -79,7 +78,7 @@ export default async function RootLayout({
         />
       </head>
 
-      <body className={cn(raleway.className, "h-screen text-sm")}>
+      <body className={cn(montserrat.className, "h-screen text-sm")}>
         <TrpcProvider>
           <NextAuthProvider session={session}>
             {children}

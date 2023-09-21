@@ -76,12 +76,24 @@
   }
 }
 
+@keyframes BgAnimation {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 150%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
+
 @layer components {
   .background-animate {
     background-size: 450%;
-    -webkit-animation: BgAnimation 5s ease infinite;
-    -moz-animation: BgAnimation 5s ease infinite;
-    animation: BgAnimation 5s ease infinite;
+    -webkit-animation: BgAnimation 7s ease infinite;
+    -moz-animation: BgAnimation 7s ease infinite;
+    animation: BgAnimation 7s ease infinite;
   }
 
   .onboarding-layout-bg {
