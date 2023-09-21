@@ -1,5 +1,6 @@
 "use client";
 
+import { Spinner } from "@/components/ui/spinner";
 import { useMounted } from "@/lib/hooks/use-mounted";
 import { useLastViewedOrganization } from "@/lib/stores/last-viewed-organization";
 import { useSession } from "next-auth/react";
@@ -22,6 +23,6 @@ export const DetectAuth = () => {
       {!session?.user && <Link href="/login">Sign in</Link>}
     </div>
   ) : (
-    <Link href="/login">Sign in</Link>
+    <Spinner />
   );
 };

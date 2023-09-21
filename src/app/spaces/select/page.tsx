@@ -1,8 +1,8 @@
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { db } from "@/lib/db";
 import { getServerSession } from "next-auth";
-import Link from "next/link";
 import { RedirectModal } from "./_ui/RedirectModal";
+import { SyncStores } from "./_ui/SyncStores";
 
 export default async function SelectOrganizationPage() {
   const session = await getServerSession(authOptions)!;
@@ -22,13 +22,7 @@ export default async function SelectOrganizationPage() {
 
         <ul>
           {availableOrganizations.map((org) => (
-            <Link href={`/spaces/${org.handle}`} key={org.id}>
-              <li>
-                <p>{org.name}</p>
-
-                <p>{org.handle}</p>
-              </li>
-            </Link>
+            <SyncStores org={org} key={org.id} />
           ))}
         </ul>
 

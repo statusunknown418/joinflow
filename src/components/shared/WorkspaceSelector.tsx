@@ -14,6 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { OrganizationType } from "@/lib/db/schema/organizations";
+import { useMounted } from "@/lib/hooks/use-mounted";
 import { useLastViewedOrganization } from "@/lib/stores/last-viewed-organization";
 import { trpc } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
@@ -21,10 +22,12 @@ import { Check, PlusCircle } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Spinner } from "../ui/spinner";
 
 export function WorkspaceSelector() {
   const organizationName = useLastViewedOrganization((state) => state.name);
   const update = useLastViewedOrganization((state) => state.update);
+  const mounted = useMounted();
 
   const { push } = useRouter();
   const [open, setOpen] = useState(false);
@@ -43,6 +46,10 @@ export function WorkspaceSelector() {
     push(`/spaces/${workspace.handle}`);
   };
 
+  if (!mounted) {
+    return <Spinner />;
+  }
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -52,29 +59,23 @@ export function WorkspaceSelector() {
           rounding="lg"
           aria-expanded={open}
           className={cn(
-            "w-full gap-2 border-none text-xs font-semibold hover:bg-zinc-600/40",
-            open && "bg-zinc-600/40",
+            "justify-start gap-3 border-transparent",
+            open && "bg-zinc-600/30",
           )}
         >
-          {organizationName ? (
+          {organizationName &&
             workspaces.data?.find((o) => o.name === organizationName)
-              ?.avatarURL ? (
+              ?.avatarURL && (
               <Image
                 src={
                   workspaces.data?.find((o) => o.name === organizationName)
                     ?.avatarURL!
                 }
-                width={20}
-                height={20}
+                width={24}
+                height={24}
                 alt={organizationName}
-                className="rounded-full"
               />
-            ) : (
-              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-300 uppercase text-indigo-700">
-                {organizationName[0] + organizationName.split("-")?.[1]?.[0]}
-              </span>
-            )
-          ) : null}
+            )}
 
           {organizationName
             ? workspaces.data?.find((o) => o.name === organizationName)?.name
@@ -125,7 +126,7 @@ export function WorkspaceSelector() {
             <CommandSeparator className="mt-2" />
 
             <CommandItem
-              className="mt-2 h-8"
+              className="mt-2 h-8 gap-3"
               onSelect={() => {
                 setOpen(false);
                 push("/spaces/new");
