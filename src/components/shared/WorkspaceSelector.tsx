@@ -13,10 +13,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { OrganizationType } from "@/lib/db/schema/organizations";
 import { useLastViewedOrganization } from "@/lib/stores/last-viewed-organization";
 import { trpc } from "@/lib/trpc/client";
 import { cn } from "@/lib/utils";
-import { Check, ChevronsUpDown, PlusCircle } from "lucide-react";
+import { Check, PlusCircle } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -30,6 +31,18 @@ export function WorkspaceSelector() {
 
   const workspaces = trpc.organizations.getAll.useQuery(undefined);
 
+  const handleSelectWorkspace = (workspace: OrganizationType) => {
+    update({
+      name: workspace.name,
+      id: workspace.id,
+      handle: workspace.handle,
+    });
+
+    setOpen(false);
+
+    push(`/spaces/${workspace.handle}`);
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -38,12 +51,34 @@ export function WorkspaceSelector() {
           role="combobox"
           rounding="lg"
           aria-expanded={open}
-          className="w-full justify-between text-xs font-semibold"
+          className={cn(
+            "w-full gap-2 border-none text-xs font-semibold hover:bg-zinc-600/40",
+            open && "bg-zinc-600/40",
+          )}
         >
+          {organizationName ? (
+            workspaces.data?.find((o) => o.name === organizationName)
+              ?.avatarURL ? (
+              <Image
+                src={
+                  workspaces.data?.find((o) => o.name === organizationName)
+                    ?.avatarURL!
+                }
+                width={20}
+                height={20}
+                alt={organizationName}
+                className="rounded-full"
+              />
+            ) : (
+              <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-300 uppercase text-indigo-700">
+                {organizationName[0] + organizationName.split("-")?.[1]?.[0]}
+              </span>
+            )
+          ) : null}
+
           {organizationName
             ? workspaces.data?.find((o) => o.name === organizationName)?.name
             : "Select organization..."}
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
 
@@ -56,17 +91,9 @@ export function WorkspaceSelector() {
           <CommandGroup>
             {workspaces.data?.map((workspace) => (
               <CommandItem
+                className="even:mt-1"
                 key={workspace.handle}
-                onSelect={() => {
-                  update({
-                    name: workspace.name,
-                    id: workspace.id,
-                    handle: workspace.handle,
-                  });
-                  setOpen(false);
-
-                  push(`/spaces/${workspace.handle}`);
-                }}
+                onSelect={() => handleSelectWorkspace(workspace)}
               >
                 <Check
                   className={cn(
@@ -80,13 +107,13 @@ export function WorkspaceSelector() {
                 {workspace.avatarURL ? (
                   <Image
                     src={workspace.avatarURL}
-                    width={32}
-                    height={32}
+                    width={24}
+                    height={24}
                     alt={workspace.name}
-                    className="rounded-full"
+                    className="rounded-lg"
                   />
                 ) : (
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-indigo-300 uppercase text-indigo-700">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-300 text-xs uppercase text-indigo-700">
                     {workspace.handle[0] + workspace.handle.split("-")[1][0]}
                   </span>
                 )}
@@ -98,13 +125,13 @@ export function WorkspaceSelector() {
             <CommandSeparator className="mt-2" />
 
             <CommandItem
-              className="mt-2 h-10"
+              className="mt-2 h-8"
               onSelect={() => {
                 setOpen(false);
                 push("/spaces/new");
               }}
             >
-              <PlusCircle size={20} className="text-indigo-400" />
+              <PlusCircle size={16} className="text-indigo-400" />
               <span>Create a workspace</span>
             </CommandItem>
           </CommandGroup>
