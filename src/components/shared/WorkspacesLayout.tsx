@@ -37,7 +37,7 @@ export const Navigation = () => {
   const shouldShowBack = selectedSegment !== null && selectedSegment !== "";
 
   return (
-    <nav className="mx-1 min-w-max rounded-b-2xl border border-input bg-zinc-800/20 px-5 py-3 backdrop-blur-sm backdrop-filter">
+    <nav className="mx-1 mt-1 min-w-max border-input px-5 py-3 backdrop-blur-sm backdrop-filter">
       <ul className="flex items-center gap-1" ref={parent}>
         <li>
           <Button
@@ -63,7 +63,7 @@ export const Navigation = () => {
           </Button>
         </li>
 
-        <li className="ml-2 text-sm font-semibold">
+        <li className="ml-2 text-sm font-semibold capitalize">
           {selectedSegment || "Dashboard"}
         </li>
       </ul>
@@ -112,7 +112,7 @@ export const MainSidebar = ({ slug }: { slug: string }) => {
   return (
     <aside
       className={cn(
-        "flex min-h-screen flex-col justify-between rounded-r-2xl border border-zinc-700 bg-zinc-800/30 px-2 py-4 backdrop-blur backdrop-filter transition-all",
+        "flex min-h-screen flex-col justify-between rounded-r-2xl border-zinc-700 px-2 py-4 backdrop-blur backdrop-filter transition-all",
         "w-[220px]",
       )}
     >
@@ -121,10 +121,15 @@ export const MainSidebar = ({ slug }: { slug: string }) => {
       <ul className="flex list-inside flex-col gap-4">
         {/* TODO: REFACTOR */}
         {mainSidebarItems.map(({ Icon, href, label }, idx) => (
-          <Link href={`/spaces/${slug}/${href}`} key={idx}>
+          <Link
+            href={`/spaces/${slug}/${href}`}
+            key={idx}
+            className="rounded-full transition-all focus:ring-offset-transparent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1"
+            onMouseDown={(e) => e.stopPropagation()}
+          >
             <li
               className={cn(
-                "inline-flex w-full select-none items-center gap-3 rounded-full border border-transparent px-4 py-2",
+                "inline-flex w-full select-none items-center gap-3 rounded-full border border-transparent px-4 py-2 focus:outline-none",
                 selectedSegment === href ||
                   (idx === 0 && selectedSegment === null)
                   ? "border-indigo-600 bg-indigo-900/40 text-zinc-50"
@@ -157,10 +162,9 @@ export const MainSidebar = ({ slug }: { slug: string }) => {
                   width={24}
                   height={24}
                   alt={session.user.name || "user logo"}
-                  className="rounded-lg"
+                  className="rounded-full"
                 />
-
-                {session.user.name}
+                <span className="max-w-[15ch] ">{session.user.name}</span>
               </Button>
             </DropdownMenuTrigger>
 

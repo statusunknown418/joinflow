@@ -82,17 +82,20 @@ export function WorkspaceSelector() {
               width={24}
               height={24}
               alt={organizationName}
+              className="rounded-full"
             />
           )}
 
-          {organizationName
-            ? workspaces.data?.find((o) => o.name === organizationName)?.name
-            : "Select organization..."}
+          <span className="max-w-[10ch] overflow-hidden text-ellipsis whitespace-nowrap">
+            {organizationName
+              ? workspaces.data?.find((o) => o.name === organizationName)?.name
+              : "Select organization..."}
+          </span>
         </Button>
       </PopoverTrigger>
 
       <PopoverContent className="p-0" align="start" sideOffset={10}>
-        <Command>
+        <Command className="bg-transparent">
           <CommandInput placeholder="Search organizations" />
 
           <CommandEmpty>No organization found</CommandEmpty>
@@ -119,7 +122,7 @@ export function WorkspaceSelector() {
                     width={24}
                     height={24}
                     alt={workspace.name}
-                    className="rounded-lg"
+                    className="rounded-full"
                   />
                 ) : (
                   <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-300 text-xs uppercase text-indigo-700">
