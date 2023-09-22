@@ -48,7 +48,7 @@ export default function WorkspaceLayout({
       <div className="relative flex max-h-screen flex-grow flex-col">
         <DynamicNavigation />
 
-        <main className="m-1 h-full overflow-y-auto rounded-xl border border-input bg-zinc-800/30 p-5">
+        <main className="mx-2 mb-2 h-full overflow-y-auto rounded-xl border border-input bg-zinc-800/20 p-5">
           {children}
         </main>
       </div>

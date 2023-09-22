@@ -37,7 +37,7 @@ export const Navigation = () => {
   const shouldShowBack = selectedSegment !== null && selectedSegment !== "";
 
   return (
-    <nav className="mx-1 mt-1 min-w-max border-input px-5 py-3 backdrop-blur-sm backdrop-filter">
+    <nav className="min-w-max border-input py-2 backdrop-blur-sm backdrop-filter">
       <ul className="flex items-center gap-1" ref={parent}>
         <li>
           <Button
@@ -63,7 +63,7 @@ export const Navigation = () => {
           </Button>
         </li>
 
-        <li className="ml-2 text-sm font-semibold capitalize">
+        <li className="ml-2 text-sm font-medium capitalize">
           {selectedSegment || "Dashboard"}
         </li>
       </ul>
@@ -112,7 +112,7 @@ export const MainSidebar = ({ slug }: { slug: string }) => {
   return (
     <aside
       className={cn(
-        "flex min-h-screen flex-col justify-between rounded-r-2xl border-zinc-700 px-2 py-4 backdrop-blur backdrop-filter transition-all",
+        "flex min-h-full flex-col justify-between rounded-r-xl border-zinc-700 px-2 py-4 backdrop-blur backdrop-filter transition-all",
         "w-[220px]",
       )}
     >
@@ -192,11 +192,15 @@ export const MainSidebar = ({ slug }: { slug: string }) => {
   );
 };
 
+/**
+ *
+ * TODO: Fix height
+ */
 export const SecondarySidebar = () => {
   return (
     <aside
       className={cn(
-        "inset-0 flex flex-col rounded-l-2xl border border-zinc-700 bg-zinc-800/30 p-4 backdrop-blur backdrop-filter",
+        "my-2 mr-1 mt-auto flex h-[94vh] flex-col rounded-xl border border-zinc-700 bg-zinc-800/30 p-4 backdrop-blur backdrop-filter",
         "w-[220px]",
       )}
     >

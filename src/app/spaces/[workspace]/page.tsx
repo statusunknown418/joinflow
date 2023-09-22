@@ -7,7 +7,12 @@ export type ParamsForWorkspacePages = {
 export default async function HomePage() {
   return (
     <section>
-      <h2 className="font-bold">Graphs, charts, hell yeah!</h2>
+      <header>
+        <h2 className="text-xl font-bold">Graphs, charts, hell yeah!</h2>
+        <p className="text-muted-foreground">
+          Take a look at the progress made at a glance
+        </p>
+      </header>
 
       <RedirectModal />
     </section>

@@ -56,6 +56,7 @@ export function WorkspaceSelector() {
         variant="outline"
         role="combobox"
         rounding="lg"
+        size="sm"
         className={cn("w-full justify-center gap-3 border-transparent")}
       >
         <Spinner />
@@ -71,6 +72,7 @@ export function WorkspaceSelector() {
           role="combobox"
           rounding="lg"
           aria-expanded={open}
+          size="sm"
           className={cn(
             "justify-start gap-3 border-transparent px-3 capitalize",
             open && "bg-zinc-600/30",

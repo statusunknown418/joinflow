@@ -10,7 +10,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
   Select,
   SelectContent,
@@ -28,24 +27,26 @@ import { useDebounce } from "@/lib/hooks/use-debounce";
 import { useLastViewedOrganization } from "@/lib/stores/last-viewed-organization";
 import { useOnboardingStore } from "@/lib/stores/onboarding-store";
 import { trpc } from "@/lib/trpc/client";
-import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ArrowUpRightFromCircle,
+  ArrowRight,
   CheckCircle,
   MinusCircle,
   Send,
   XCircleIcon,
 } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import slugify from "slugify";
 
-export const OnboardingForm = () => {
+export const OnboardingForm = ({
+  isOnboard = false,
+}: {
+  isOnboard?: boolean;
+}) => {
   const methods = useForm<CreateOrganizationType>({
     resetOptions: {
       keepIsValid: true,
@@ -61,7 +62,6 @@ export const OnboardingForm = () => {
 
   const avatarURL = methods.watch("avatarURL");
   const sluggedHandle = slugify(methods.watch("name"));
-  const selectedPlan = methods.watch("plan");
   const router = useRouter();
 
   const updateLastViewed = useLastViewedOrganization((state) => state.update);
@@ -113,10 +113,10 @@ export const OnboardingForm = () => {
         onSubmit={makeSubmit}
         className="flex w-full flex-col gap-6 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5 shadow-xl shadow-black/50"
       >
-        <div className="flex items-center gap-2">
+        <div className="flex h-[120px] items-center gap-2">
           <UploadDropzone
             endpoint="imageUploader"
-            className="flex cursor-pointer items-center justify-center gap-1 border border-dashed border-input py-2 transition-all focus:outline-none focus:ring-2 focus:ring-ring "
+            className="flex min-h-full max-w-full cursor-pointer items-center justify-center border border-dashed border-input transition-all focus:outline-none focus:ring-2 focus:ring-ring"
             content={{
               label: (
                 <span className="font-semibold">
@@ -132,6 +132,7 @@ export const OnboardingForm = () => {
             appearance={{
               label: {
                 fontSize: 13,
+                textOverflow: "clip",
               },
               allowedContent: {
                 fontSize: 12,
@@ -141,8 +142,8 @@ export const OnboardingForm = () => {
                 color: "#9CA3AF",
               },
               uploadIcon: {
-                width: 0,
-                height: 0,
+                width: 24,
+                height: 24,
               },
             }}
             config={{
@@ -160,14 +161,18 @@ export const OnboardingForm = () => {
             }}
           />
 
+          {avatarURL && <ArrowRight className="text-zinc-500" />}
+
           {avatarURL && (
-            <Image
-              src={avatarURL}
-              alt={"logo"}
-              width={150}
-              height={150}
-              className="rounded-lg border border-input p-1"
-            />
+            <div className="flex min-h-full items-center rounded-xl border border-input p-1">
+              <Image
+                src={avatarURL}
+                alt={"logo"}
+                width={120}
+                height={120}
+                className="rounded-lg"
+              />
+            </div>
           )}
         </div>
 
@@ -231,10 +236,6 @@ export const OnboardingForm = () => {
               {!!debouncedSlug && checkSlugAvailability.data?.recommended && (
                 <FormDescription className="text-destructive">
                   Oops, that name is unavailable
-                  {/* what about this one <ArrowRight size={16} className="inline-block" />{" "}
-              <span className="text-white">
-                {checkSlugAvailability.data?.recommended}
-                </span> */}
                 </FormDescription>
               )}
 
@@ -246,128 +247,42 @@ export const OnboardingForm = () => {
           )}
         />
 
-        <FormField
-          control={methods.control}
-          name="approxSizeUpTo"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Agency size</FormLabel>
+        {!isOnboard && (
+          <>
+            <FormField
+              control={methods.control}
+              name="approxSizeUpTo"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Agency size</FormLabel>
 
-              <Select
-                onValueChange={field.onChange}
-                value={field.value?.toString()}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder={"Up to 10"} />
-                  </SelectTrigger>
-                </FormControl>
-
-                <SelectContent>
-                  <SelectItem value={"10"}>1-10</SelectItem>
-                  <SelectItem value={"50"}>11-50</SelectItem>
-                  <SelectItem value={"100"}>51-100</SelectItem>
-                </SelectContent>
-              </Select>
-
-              <FormMessage />
-
-              <FormDescription>
-                This will help us better understand your needs
-              </FormDescription>
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={methods.control}
-          name="plan"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Plan</FormLabel>
-
-              <FormDescription>
-                Select the plan that best fits your needs
-              </FormDescription>
-
-              <FormControl>
-                <RadioGroup
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                  className="grid grid-cols-1 items-center rounded-xl border border-input p-2 transition-all focus-within:ring-2 focus-within:ring-ring md:grid-cols-3"
-                >
-                  <FormItem className="group flex w-full items-center justify-center space-y-0">
+                  <Select
+                    onValueChange={field.onChange}
+                    value={field.value?.toString()}
+                  >
                     <FormControl>
-                      <RadioGroupItem value="free" className="sr-only" />
+                      <SelectTrigger>
+                        <SelectValue placeholder={"Up to 10"} />
+                      </SelectTrigger>
                     </FormControl>
 
-                    <FormLabel
-                      className={cn(
-                        "flex w-full flex-col items-center gap-1 rounded-lg px-4 py-2 text-muted-foreground transition-all group-hover:bg-zinc-800/50",
-                        selectedPlan === "free" &&
-                          "text-zinc-400 ring-2 ring-zinc-500",
-                      )}
-                    >
-                      <span className="font-bold">Free forever</span>
-                      <span className="font-normal">$0/month</span>
-                    </FormLabel>
-                  </FormItem>
+                    <SelectContent>
+                      <SelectItem value={"10"}>1-10</SelectItem>
+                      <SelectItem value={"50"}>11-50</SelectItem>
+                      <SelectItem value={"100"}>51-100</SelectItem>
+                    </SelectContent>
+                  </Select>
 
-                  <FormItem className="group flex w-full items-center space-y-0">
-                    <FormControl className="sr-only">
-                      <RadioGroupItem value="scaler" className="sr-only" />
-                    </FormControl>
+                  <FormMessage />
 
-                    <FormLabel
-                      className={cn(
-                        "flex w-full flex-col items-center gap-1 rounded-lg px-4 py-2 text-muted-foreground transition-all group-hover:bg-zinc-800/50",
-                        selectedPlan === "scaler" &&
-                          "text-violet-400 ring-2 ring-violet-500",
-                      )}
-                    >
-                      <span className="font-bold">Scaler</span>
-                      <span className="font-normal">$9/month</span>
-                    </FormLabel>
-                  </FormItem>
-
-                  <FormItem className="group flex w-full items-center space-y-0">
-                    <FormControl className="sr-only">
-                      <RadioGroupItem value="enterprise" />
-                    </FormControl>
-
-                    <FormLabel
-                      className={cn(
-                        "flex w-full flex-col items-center gap-1 rounded-lg px-4 py-2 text-muted-foreground transition-all group-hover:bg-zinc-800/50",
-                        selectedPlan === "enterprise" &&
-                          "text-blue-400 ring-2 ring-blue-500",
-                      )}
-                    >
-                      <span className="font-bold">Enterprise</span>
-                      <span className="font-normal">$29/month</span>
-                    </FormLabel>
-                  </FormItem>
-                </RadioGroup>
-              </FormControl>
-
-              <FormDescription>
-                <Link
-                  href="/pricing"
-                  className="text-violet-400 underline-offset-1 transition-all hover:underline"
-                >
-                  Find the details here!{" "}
-                  <ArrowUpRightFromCircle size={14} className="inline-block" />
-                </Link>
-              </FormDescription>
-
-              <FormDescription className="text-xs">
-                You can always change this later, it is not subject to any
-                contract
-              </FormDescription>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+                  <FormDescription>
+                    This will help us better understand your needs
+                  </FormDescription>
+                </FormItem>
+              )}
+            />
+          </>
+        )}
 
         <Button
           disabled={
