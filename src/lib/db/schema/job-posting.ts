@@ -10,6 +10,9 @@ import {
   timestamp,
   varchar,
 } from "drizzle-orm/mysql-core";
+import { createInsertSchema } from "drizzle-zod";
+import { z } from "zod";
+import { applicantsToJobPostings } from "./applicant";
 import { users } from "./auth";
 import { projects } from "./projects";
 
@@ -18,6 +21,11 @@ export const jobPosting = mysqlTable("job_posting", {
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
   budget: int("budget"),
+  currency: varchar("currency", { length: 255, enum: ["USD"] }).default("USD"),
+  location: varchar("location", { length: 255, enum: ["remote"] }).default(
+    "remote",
+  ),
+  isRemote: boolean("is_remote").default(true),
   showCompensation: boolean("show_compensation").default(true),
   estimateHires: int("estimate_hires").default(1),
   compensationType: mysqlEnum("compensation_type", [
@@ -30,7 +38,10 @@ export const jobPosting = mysqlTable("job_posting", {
   extraBenefits: varchar("extra_benefits", { length: 255 }),
   isNegotiable: boolean("is_negotiable").default(true),
   maximumBudget: int("maximum_budget"),
-  state: mysqlEnum("state", ["draft", "published", "archived"]),
+  state: mysqlEnum("state", ["draft", "published", "archived"]).default(
+    "draft",
+  ),
+  internalNotes: text("internal_notes"),
   hiringLeadId: varchar("hiring_lead_id", { length: 255 }),
   creatorId: varchar("creator_id", { length: 255 }).notNull(),
   onProjectId: int("on_project_id").notNull(),
@@ -39,7 +50,17 @@ export const jobPosting = mysqlTable("job_posting", {
   }).defaultNow(),
 });
 
+export const addJobPostingSchema = createInsertSchema(jobPosting, {
+  title: (s) => s.title.min(1),
+  description: (s) => s.description.min(1),
+  location: (s) => s.location.or(z.string()),
+}).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const jobPostingRelations = relations(jobPosting, ({ one, many }) => ({
+  applicants: many(applicantsToJobPostings),
   categories: many(jobPostingToCategories),
   creator: one(users, {
     fields: [jobPosting.creatorId],

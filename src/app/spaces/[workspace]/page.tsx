@@ -14,6 +14,8 @@ export default async function HomePage() {
         </p>
       </header>
 
+      <h3>Recent open jobs</h3>
+
       <RedirectModal />
     </section>
   );
