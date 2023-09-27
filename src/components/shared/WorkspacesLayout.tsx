@@ -9,10 +9,10 @@ import {
   Briefcase,
   CalendarDays,
   Cog,
-  DollarSign,
   LayoutGrid,
   LogOut,
   MailCheck,
+  Projector,
   Users,
 } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
@@ -78,6 +78,11 @@ export const mainSidebarItems = [
     href: "",
   },
   {
+    label: "Projects",
+    Icon: Projector,
+    href: "projects",
+  },
+  {
     label: "Job postings",
     Icon: Briefcase,
     href: "jobs",
@@ -91,11 +96,6 @@ export const mainSidebarItems = [
     label: "Interviews",
     Icon: CalendarDays,
     href: "interviews",
-  },
-  {
-    label: "Offers",
-    Icon: DollarSign,
-    href: "offers",
   },
   {
     label: "Email templates",

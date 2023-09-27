@@ -1,4 +1,3 @@
-import { SecondarySidebar } from "@/components/shared/WorkspacesLayout";
 import { Spinner } from "@/components/ui/spinner";
 import dynamic from "next/dynamic";
 import { ReactNode } from "react";
@@ -53,7 +52,7 @@ export default function WorkspaceLayout({
         </main>
       </div>
 
-      <SecondarySidebar />
+      {/* <SecondarySidebar /> */}
     </section>
   );
 }

@@ -20,7 +20,7 @@ export const applicant = mysqlTable("applicant", {
   github: varchar("github", { length: 255 }),
   portfolio: varchar("portfolio", { length: 255 }),
   resume: varchar("resume", { length: 255 }),
-  coverLetter: varchar("cover_letter", { length: 255 }),
+  coverLetter: varchar("cover_letter", { length: 500 }),
   createdAt: timestamp("created_at", {
     fsp: 5,
   }).defaultNow(),

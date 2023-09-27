@@ -14,12 +14,13 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 import { applicantsToJobPostings } from "./applicant";
 import { users } from "./auth";
+import { department } from "./department";
 import { projects } from "./projects";
 
 export const jobPosting = mysqlTable("job_posting", {
   id: serial("id").primaryKey(),
   title: varchar("title", { length: 255 }).notNull(),
-  description: text("description"),
+  description: text("description").default(""),
   budget: int("budget"),
   currency: varchar("currency", { length: 255, enum: ["USD"] }).default("USD"),
   location: varchar("location", { length: 255, enum: ["remote"] }).default(
@@ -45,19 +46,49 @@ export const jobPosting = mysqlTable("job_posting", {
   hiringLeadId: varchar("hiring_lead_id", { length: 255 }),
   creatorId: varchar("creator_id", { length: 255 }).notNull(),
   onProjectId: int("on_project_id").notNull(),
+  departmentId: int("department_id"),
   createdAt: timestamp("created_at", {
     fsp: 5,
   }).defaultNow(),
 });
 
 export const addJobPostingSchema = createInsertSchema(jobPosting, {
-  title: (s) => s.title.min(1),
-  description: (s) => s.description.min(1),
+  title: (s) =>
+    s.title.min(1, {
+      message: "Every job posting needs a title don't you think?",
+    }),
+  description: (s) => s.description.min(10),
   location: (s) => s.location.or(z.string()),
-}).omit({
-  id: true,
-  createdAt: true,
-});
+})
+  .omit({
+    id: true,
+    createdAt: true,
+    creatorId: true,
+  })
+  .refine(
+    (s) => {
+      if (s.isRemote) {
+        return s.location === "remote";
+      }
+
+      return true;
+    },
+    {
+      message: "Location must be remote if job is set to 'remote'",
+    },
+  )
+  .refine(
+    (s) => {
+      if (s.showCompensation) {
+        return s.compensationType !== undefined || s.budget !== null;
+      }
+    },
+    {
+      message: "Compensation type or budget is required if enabled",
+    },
+  );
+
+export type AddJobPosting = z.infer<typeof addJobPostingSchema>;
 
 export const jobPostingRelations = relations(jobPosting, ({ one, many }) => ({
   applicants: many(applicantsToJobPostings),
@@ -73,6 +104,10 @@ export const jobPostingRelations = relations(jobPosting, ({ one, many }) => ({
   project: one(projects, {
     fields: [jobPosting.onProjectId],
     references: [projects.id],
+  }),
+  department: one(department, {
+    fields: [jobPosting.departmentId],
+    references: [department.id],
   }),
 }));
 
